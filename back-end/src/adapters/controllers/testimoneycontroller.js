@@ -1,5 +1,5 @@
-const TestimonialEntity = require('../../Domain/testimoneyEntity');
 
+import TestimonialEntity from '../../Domain/testimoneyEntity.js';
 class TestimonialController {
     constructor(repository) {
         this.testimonialRepository = repository;
@@ -145,4 +145,4 @@ class TestimonialController {
     }
 }
 
-module.exports = TestimonialController;
+export default TestimonialController;

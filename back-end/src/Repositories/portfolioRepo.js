@@ -1,5 +1,5 @@
-const Portfolio = require("../Infrastructures/models/portfolioModel");
 
+import Portfolio from "../Infrastructures/models/portfolioModel.js";
 class PortfolioRepository {
 
     async findAll(page = 1, limit = 10) {

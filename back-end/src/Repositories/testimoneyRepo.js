@@ -1,5 +1,5 @@
-const Testimonial = require('../Infrastructures/models/testimoneyModel');
-
+import mongoose from 'mongoose';
+import Testimonial from '../Infrastructures/models/testimoneyModel.js';
 class TestimonialRepository {
     async create(testimonialData) {
         try {
@@ -72,6 +72,30 @@ class TestimonialRepository {
     }
 
 
+    async findById(id) {
+        try {
+            // 1. Validate if the ID is a valid MongoDB ObjectId
+            if (!mongoose.isValidObjectId(id)) {
+                throw new Error("Invalid ID format.");
+            }
+
+            // 2. Query the database
+            const testimonial = await Testimonial.findById(id);
+
+            // 3. Return the result (or null if not found)
+            return testimonial;
+        } catch (error) {
+            // If it's our own validation error, rethrow it
+            if (error.message === "Invalid ID format.") {
+                throw error;
+            }
+            // Otherwise, throw a general database error
+            throw new Error(`Failed to retrieve testimonial: ${error.message}`);
+        }
+    }
+
+// ... rest of the class ...
+
     async delete(id) {
         try {
             const deletedTestimonial = await Testimonial.findByIdAndDelete(id);
@@ -91,4 +115,4 @@ class TestimonialRepository {
 
 }
 
-module.exports = TestimonialRepository;
+export default TestimonialRepository;

@@ -51,4 +51,4 @@ class TestimonialEntity {
     }
 }
 
-module.exports = TestimonialEntity;
+export default TestimonialEntity;
