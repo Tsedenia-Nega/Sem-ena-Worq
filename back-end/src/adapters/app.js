@@ -10,7 +10,7 @@ import connectToDatabase from "../Infrastructures/dataBase.js";
 // nodemo
 import AuthRoutes from "./Routes/AuthRoutes.js";
 import serviceRoutes from "./Routes/ServiceRoutes.js";
-// import blogRoutes from "./Routes/blogsRoutes.js";
+import blogRoutes from "./Routes/blogsRoutes.js";
 // import portfloio from "./Routes/portfolioRoutes.js";
 
 dotenv.config({ path: "../.env" });
@@ -33,7 +33,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Base Routes
 app.use("/sem&worq", AuthRoutes);
-// app.use("/sem&worq/blogs", blogRoutes);
+app.use("/sem&worq/blogs", blogRoutes);
 app.use("/sem&worq/services", serviceRoutes);
 // app.use("/sem&worq/testimony", testimonyRoutes);
 // app.use("/sem&worq/contacts", contactRoutes);

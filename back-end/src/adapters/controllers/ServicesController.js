@@ -31,7 +31,7 @@ class ServiceController {
 
     const newService = new Service(serviceEntity);
 
-    const result = await this.serviceRepo.CreateService(newService);
+    const result = await this.serviceRepo.createService(newService);
 
     res.status(201).json({ success: true, service: result });
   } catch (err) {
@@ -53,7 +53,7 @@ class ServiceController {
         return res.status(400).json({ message: "Service ID is required for updates." });
       }
 
-      const updatedService = await this.serviceRepo.UpdateService(id, updatedFields);
+      const updatedService = await this.serviceRepo.updateService(id, updatedFields);
       if (!updatedService) {
         return res.status(404).json({ message: "Service not found." });
       }
@@ -73,7 +73,7 @@ class ServiceController {
         return res.status(400).json({ message: "Service ID is required for deletion." });
       }
 
-      const deletedService = await this.serviceRepo.DeleteService(id);
+      const deletedService = await this.serviceRepo.deleteService(id);
       if (!deletedService) {
         return res.status(404).json({ message: "Service not found." });
       }
@@ -93,7 +93,7 @@ class ServiceController {
       return res.status(400).json({ success: false, message: "Page and limit must be positive integers." });
     }
 
-    const services = await this.serviceRepo.GetAllServices(page, limit);
+    const services = await this.serviceRepo.getAllServices(page, limit);
     const total = await this.serviceRepo.count(); 
 
     const result = {
@@ -121,7 +121,7 @@ class ServiceController {
         return res.status(400).json({ message: "Service ID is required." });
       }
 
-      const service = await this.serviceRepo.GetServiceById(id);
+      const service = await this.serviceRepo.getServiceById(id);
       if (!service) {
         return res.status(404).json({ message: "Service not found." });
       }

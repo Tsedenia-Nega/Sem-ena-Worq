@@ -52,4 +52,4 @@ class BlogEntity {
     }
 }
 
-module.exports = BlogEntity;
+export default BlogEntity;

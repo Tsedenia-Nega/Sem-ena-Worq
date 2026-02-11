@@ -1,9 +1,8 @@
-const express = require('express');
-const BlogController = require('../../adapters/controllers/blogsController');
-const BlogRepository = require('../../Repositories/blogsRepo');
-const authMiddleware = require('../../adapters/Middlewares/AuthMiddleware');
-const upload = require('../../adapters/Middlewares/imageMiddleware'); 
-
+import express from 'express';
+import BlogController from '../../adapters/controllers/blogsController.js';
+import BlogRepository from '../../Repositories/blogsRepo.js';
+import authMiddleware from '../../adapters/Middlewares/AuthMiddleware.js';
+import upload from '../../adapters/Middlewares/imageMiddleware.js';
 const router = express.Router();
 
 const blogRepository = new BlogRepository();
@@ -46,7 +45,7 @@ router.get(
 );
 
 
-router.post('/addComment', (req, res) => blogController.addComment(req, res));
+router.post('/addComment/:blogId', (req, res) => blogController.addComment(req, res));
 
 router.delete(
     '/deleteComment/:blogId/:commentId',
@@ -64,4 +63,4 @@ router.post('/dislike/:blogId', (req, res) => blogController.addDislike(req, res
 router.get('/likes/:blogId', (req, res) => blogController.getLikes(req, res));
 router.get('/dislikes/:blogId', (req, res) => blogController.getDislikes(req, res));
 
-module.exports = router;
+export default router;

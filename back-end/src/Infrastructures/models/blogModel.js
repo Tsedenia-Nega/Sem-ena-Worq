@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-
+import mongoose from 'mongoose';
 const CommentSchema = new mongoose.Schema({
     email: { type: String, required: true },
     content: { type: String, required: true },
@@ -21,4 +20,5 @@ const BlogSchema = new mongoose.Schema({
     status: { type: String, required: true },
 }, { timestamps: true }); 
 
-module.exports = mongoose.model('Blog', BlogSchema);
+const BlogModel = mongoose.model('Blog', BlogSchema);
+export default BlogModel;
