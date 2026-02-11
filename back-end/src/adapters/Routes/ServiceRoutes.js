@@ -1,8 +1,9 @@
-const express = require('express');
-const ServiceController = require('../controllers/ServicesController');
-const ServiceRepository = require('../../Repositories/ServicesRepo');
-const authMiddleware = require('../../adapters/Middlewares/AuthMiddleware');
-const imageMiddleware = require('../../adapters/Middlewares/imageMiddleware'); 
+import express from 'express';
+import ServiceController from '../controllers/ServicesController.js';
+import ServiceRepository from '../../Repositories/ServicesRepo.js';
+import authMiddleware from '../../adapters/Middlewares/AuthMiddleware.js';
+import imageMiddleware from '../../adapters/Middlewares/imageMiddleware.js';
+
 
 const serviceRepo = new ServiceRepository();
 const serviceController = new ServiceController(serviceRepo);
@@ -20,4 +21,4 @@ router.get('/get', (req, res) => serviceController.listServices(req, res));
 
 router.get('/get/:id', (req, res) => serviceController.getServiceById(req, res));
 
-module.exports = router;
+export default router;

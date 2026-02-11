@@ -22,4 +22,4 @@ class ServicesEntity {
     }
 }
 
-module.exports = ServicesEntity;
+export default ServicesEntity;  

@@ -1,5 +1,5 @@
-const Service = require("../../Domain/ServicesEntity");
 
+import Service from "../../Domain/ServicesEntity.js";
 class ServiceController {
   constructor(serviceRepo) {
     this.serviceRepo = serviceRepo;
@@ -145,4 +145,5 @@ class ServiceController {
   }
 }
 
-module.exports = ServiceController;
+export default ServiceController;
+

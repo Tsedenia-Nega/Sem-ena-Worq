@@ -1,4 +1,4 @@
-const ServiceModel = require("../Infrastructures/models/ServicesModel");
+import ServiceModel from "../Infrastructures/models/ServicesModel.js";
 
 class ServiceRepository {
   
@@ -78,4 +78,4 @@ class ServiceRepository {
   }
 }
 
-module.exports = ServiceRepository;
+export default ServiceRepository;

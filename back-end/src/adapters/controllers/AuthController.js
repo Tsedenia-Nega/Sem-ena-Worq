@@ -98,20 +98,27 @@ class AuthController {
 async logout(req, res) {
     try {
         const { id } = req.params;
-        const refreshToken = req.cookies.refreshToken;
+        const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
         
         if (!refreshToken) {
             return res.status(400).json({ error: "Refresh token is required." });
         }
+const decoded = await this.TokenHelper.validateRefreshToken(refreshToken);
 
-        const err = await this.TokenHelper.validateRefreshToken(refreshToken);
-        if (err) {
-            return res.status(401).json({ error: "Invalid refresh token." });
-        }
+// 3. Delete from Redis using the SESSION ID from the token
+await this.TokenHelper.deleteRefreshToken(decoded.sessionId);
 
-        await this.TokenHelper.deleteRefreshToken(id);
+// 4. Cleanup
+res.clearCookie("refreshToken");
+// return res.json({ message: "Logged out successfully." });
+//         const err = await this.TokenHelper.validateRefreshToken(refreshToken);
+//         if (err) {
+//             return res.status(401).json({ error: "Invalid refresh token." });
+//         }
 
-        res.clearCookie("refreshToken");
+        // await this.TokenHelper.deleteRefreshToken(id);
+
+        // res.clearCookie("refreshToken");
         return res.json({ message: "Logged out successfully." });
 
     } catch (error) {
