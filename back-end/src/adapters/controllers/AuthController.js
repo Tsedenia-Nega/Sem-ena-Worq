@@ -105,20 +105,12 @@ async logout(req, res) {
         }
 const decoded = await this.TokenHelper.validateRefreshToken(refreshToken);
 
-// 3. Delete from Redis using the SESSION ID from the token
+
 await this.TokenHelper.deleteRefreshToken(decoded.sessionId);
 
-// 4. Cleanup
+
 res.clearCookie("refreshToken");
-// return res.json({ message: "Logged out successfully." });
-//         const err = await this.TokenHelper.validateRefreshToken(refreshToken);
-//         if (err) {
-//             return res.status(401).json({ error: "Invalid refresh token." });
-//         }
 
-        // await this.TokenHelper.deleteRefreshToken(id);
-
-        // res.clearCookie("refreshToken");
         return res.json({ message: "Logged out successfully." });
 
     } catch (error) {
