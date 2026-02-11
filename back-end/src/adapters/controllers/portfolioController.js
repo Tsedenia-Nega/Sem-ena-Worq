@@ -1,5 +1,5 @@
-const PortfolioEntity = require('../../Domain/portfolioEntity');
 
+import PortfolioEntity from '../../Domain/portfolioEntity.js';
 class PortfolioController {
     constructor(repository) {
         this.repository = repository;
@@ -128,4 +128,4 @@ class PortfolioController {
     }
 }
 
-module.exports = PortfolioController;
+export default PortfolioController;

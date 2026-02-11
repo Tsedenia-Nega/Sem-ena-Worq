@@ -36,4 +36,4 @@ class PortfolioEntity {
     }
 }
 
-module.exports = PortfolioEntity;
+export default PortfolioEntity;

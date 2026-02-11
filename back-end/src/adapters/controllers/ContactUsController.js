@@ -1,6 +1,5 @@
-const mongoose = require('mongoose');
-const ContactUsEntity = require('../../Domain/ContactUsEntity');
-
+import mongoose from 'mongoose';
+import ContactUsEntity from '../../Domain/ContactUsEntity.js';
 class ContactController {
     constructor(contactRepository) {
         this.contactRepository = contactRepository;
@@ -104,4 +103,4 @@ class ContactController {
     }
 }
 
-module.exports = ContactController;
+export default ContactController;

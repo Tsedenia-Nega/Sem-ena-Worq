@@ -88,4 +88,4 @@ class PortfolioRepository {
 
 }
 
-module.exports = PortfolioRepository;
+export default PortfolioRepository;

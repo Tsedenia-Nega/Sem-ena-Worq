@@ -19,4 +19,4 @@ class ContactUsEntity {
   }
 }
 
-module.exports = ContactUsEntity;
+export default ContactUsEntity;

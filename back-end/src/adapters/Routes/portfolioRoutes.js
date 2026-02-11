@@ -1,8 +1,9 @@
-const express = require("express");
-const PortfolioController = require("../controllers/PortfolioController");
-const PortfolioRepository = require("../../Repositories/portfolioRepo");
-const authMiddleware = require('../../adapters/Middlewares/AuthMiddleware');
-const upload = require('../../adapters/Middlewares/imageMiddleware'); 
+import express from 'express';
+import PortfolioController from '../controllers/PortfolioController.js';
+import PortfolioRepository from '../../Repositories/portfolioRepo.js';
+import authMiddleware from '../../adapters/Middlewares/AuthMiddleware.js';
+import upload from '../../adapters/Middlewares/imageMiddleware.js';
+ 
 const portfolioRepository = new PortfolioRepository();
 const portfolioController = new PortfolioController(portfolioRepository);
 
@@ -20,4 +21,4 @@ router.put("/update/:id", authMiddleware, upload.single('image'), (req, res) => 
 router.delete("/delete/:id", authMiddleware, (req, res) => portfolioController.deletePortfolio(req, res));
 
 
-module.exports = router;
+export default router;

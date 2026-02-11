@@ -1,5 +1,5 @@
-const ContactUsModel = require('../Infrastructures/models/ContactUsModel');
 
+import ContactUsModel from '../Infrastructures/models/ContactUsModel.js';
 class contactRepository {
     async createContactUs(contactData) {
         try {
@@ -55,4 +55,4 @@ class contactRepository {
     }
 
 }
-module.exports = contactRepository;
+export default contactRepository;

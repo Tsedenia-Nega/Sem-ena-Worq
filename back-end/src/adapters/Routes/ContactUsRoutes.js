@@ -1,9 +1,10 @@
-const express = require('express');
-const contactController = require('../controllers/ContactUsController');
+import express from 'express';
+import contactController from '../controllers/ContactUsController.js';
+import contactRepository from '../../Repositories/ContactUsRepo.js';
+import authMiddleware from '../../adapters/Middlewares/AuthMiddleware.js';  
 
-const contactRepository = require('../../Repositories/ContactUsRepo');
 const router = express.Router();
-const authMiddleware = require('../../adapters/Middlewares/AuthMiddleware');
+
 
 const contactRepo = new contactRepository();
 const contactContrl = new contactController(contactRepo);
@@ -19,4 +20,4 @@ router.get('/getContacts',Middlware.authMiddleware, Middlware.adminOnlyMiddlewar
 router.delete('/:id',Middlware.authMiddleware, Middlware.adminOnlyMiddleware,(req, res) =>  contactContrl.deleteContact(req, res));
 router.get('/contacts/:id',Middlware.authMiddleware, Middlware.adminOnlyMiddleware,(req, res) =>  contactContrl.getContactById(req, res));
 
-module.exports = router;
+export default router;
