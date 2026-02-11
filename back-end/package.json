@@ -4,8 +4,8 @@
   "main": "app.js",
   "scripts": {
     "test": "jest --detectOpenHandles --runInBand",
-    "start": "nodemon src/adapters/app.js",
-    "dev": "node src/adapters/app.js"
+    "start": "node src/adapters/app.js",
+    "dev": "nodemon src/adapters/app.js"
   },
   "type": "module",
   "jest": {
