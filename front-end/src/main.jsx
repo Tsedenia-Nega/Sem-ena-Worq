@@ -5,6 +5,6 @@ import Services from "./pages/Services"
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Services />
+    <App/>
   </StrictMode>,
 )
