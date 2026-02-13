@@ -6,6 +6,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Portfolio from "./pages/portfolio"
 import Login from "./pages/Login";
 import Services from "./pages/Services";
+import Contact from "./pages/Contact";
 
 const MainLayout = () => (
   <>
@@ -19,12 +20,12 @@ function App() {
     <ThemeProvider>
       <Router>
         <Routes>
-         
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/service" element={<Services />} />
             <Route path="/portfolio" element={<Portfolio />} />
+            <Route path="/contact" element={<Contact />} />
           </Route>
 
           <Route path="/login" element={<Login />} />
