@@ -13,52 +13,26 @@ const Blog = () => {
   const articles = [
     {
       category: "Category 1",
-      title: "Article 1",
-      content: "This is a brief summary of Article 1 in Category 1.",
-      detailedDescription:
-        "This is the detailed description of Article 1 in Category 1. It provides in-depth insights into the topic, highlighting key points and solutions.",
+      title: "Article name- headline for an article",
+      content: "This is a brief summary of Article 1.",
+      detailedDescription: "This is the detailed description of Article 1.",
       imageUrl: image1,
     },
     {
-      category: "Category 1",
-      title: "Article 2",
-      content: "This is a brief summary of Article 2 in Category 1.",
-      detailedDescription:
-        "This is the detailed description of Article 2 in Category 1. It explores challenges and opportunities in the field.",
+      category: "Category 2",
+      title: "Article name- headline for an article",
+      content: "This is a brief summary of Article 2.",
+      detailedDescription: "This is the detailed description of Article 2.",
       imageUrl: image2,
     },
     {
-      category: "Category 1",
-      title: "Article 3",
-      content: "This is a brief summary of Article 3 in Category 1.",
-      detailedDescription:
-        "This is the detailed description of Article 3 in Category 1. It includes a case study and expert commentary.",
+      category: "Category 3",
+      title: "Article name- headline for an article",
+      content: "This is a brief summary of Article 3.",
+      detailedDescription: "This is the detailed description of Article 3.",
       imageUrl: image3,
     },
-    {
-      category: "Category 2",
-      title: "Article 1",
-      content: "This is a brief summary of Article 1 in Category 2.",
-      detailedDescription:
-        "This is the detailed description of Article 1 in Category 2. It focuses on recent advancements in the topic.",
-      imageUrl: image4,
-    },
-    {
-      category: "Category 2",
-      title: "Article 2",
-      content: "This is a brief summary of Article 2 in Category 2.",
-      detailedDescription:
-        "This is the detailed description of Article 2 in Category 2. It provides actionable strategies for implementation.",
-      imageUrl: image5,
-    },
-    {
-      category: "Category 2",
-      title: "Article 3",
-      content: "This is a brief summary of Article 3 in Category 2.",
-      detailedDescription:
-        "This is the detailed description of Article 3 in Category 2. It includes research findings and their implications.",
-      imageUrl: image6,
-    },
+    // ... add other articles as needed
   ];
 
   const filteredArticles =
@@ -66,93 +40,111 @@ const Blog = () => {
       ? articles
       : articles.filter((article) => article.category === activeCategory);
 
-  const handleReadMore = (article) => {
-    setSelectedArticle(article);
-  };
-
-  const handleBack = () => {
-    setSelectedArticle(null);
-  };
-
   return (
-    <div className="bg-black text-yellow-500 min-h-screen pb-24">
-      {selectedArticle ? (
-        <div className="p-6 bg-black text-yellow-500">
-          <header className="text-center py-6">
-            <h1 className="text-5xl font-bold">Blog</h1>
-          </header>
-          <div className="flex justify-center mb-6">
-            <img
-              src={selectedArticle.imageUrl}
-              alt={selectedArticle.title}
-              className="rounded-lg max-h-64 max-w-full object-contain"
-            />
-          </div>
-          <h3 className="text-4xl mb-4 text-center">{selectedArticle.title}</h3>
-          <p className="mt-2 text-lg">{selectedArticle.detailedDescription}</p>
-          <button onClick={handleBack} className="underline mt-4">
-            &larr; Back
-          </button>
-        </div>
-      ) : (
-        <>
-          <header className="text-center py-12">
-            <h1 className="text-5xl font-bold">Blog</h1>
-            <p className="mt-4 max-w-2xl mx-auto">
-              Stay updated with the latest articles and insights.
-            </p>
-          </header>
-          <div className="flex justify-center space-x-6 mb-6">
-            <button
-              onClick={() => setActiveCategory("All Articles")}
-              className={`hover:underline ${
-                activeCategory === "All Articles" ? "underline font-bold" : ""
-              }`}
-            >
-              All Articles
-            </button>
-            <button
-              onClick={() => setActiveCategory("Category 1")}
-              className={`hover:underline ${
-                activeCategory === "Category 1" ? "underline font-bold" : ""
-              }`}
-            >
-              Category 1
-            </button>
-            <button
-              onClick={() => setActiveCategory("Category 2")}
-              className={`hover:underline ${
-                activeCategory === "Category 2" ? "underline font-bold" : ""
-              }`}
-            >
-              Category 2
-            </button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6">
-            {filteredArticles.map((article, index) => (
-              <div
-                key={index}
-                className="relative bg-cover bg-center rounded-lg"
-                style={{
-                  backgroundImage: `url(${article.imageUrl})`,
-                  minHeight: "200px",
-                }}
+    <div className="bg-[#000000] text-white min-h-screen pb-24 font-itim relative overflow-hidden">
+      {/* Background Decorative Hexagons */}
+      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 w-64 h-64 bg-[#DD9735]/5 clip-hexagon border border-[#DD9735]/10 -z-0" />
+      <div className="absolute bottom-10 right-10 w-48 h-48 bg-[#DD9735]/5 clip-hexagon border border-[#DD9735]/10 -z-0" />
+
+      <div className="max-w-7xl mx-auto px-10 md:px-20 relative z-10">
+        {selectedArticle ? (
+          /* DETAILED ARTICLE VIEW */
+          <div className="pt-20">
+            <h1 className="text-[#DD9735] text-4xl mb-12 tracking-widest uppercase">
+              Blog
+            </h1>
+            <div className="flex flex-col items-center">
+              <img
+                src={selectedArticle.imageUrl}
+                alt={selectedArticle.title}
+                className="w-full max-w-3xl rounded-sm mb-10 border border-[#DD9735]/20 shadow-2xl"
+              />
+              <h3 className="text-[#DD9735] text-3xl mb-6">
+                {selectedArticle.title}
+              </h3>
+              <p className="text-gray-300 text-lg leading-relaxed max-w-3xl text-center">
+                {selectedArticle.detailedDescription}
+              </p>
+              <button
+                onClick={() => setSelectedArticle(null)}
+                className="mt-12 text-[#DD9735] border-b border-[#DD9735] pb-1 hover:text-white hover:border-white transition-all"
               >
-                <div className="bg-black bg-opacity-50 p-4 rounded-lg h-full flex flex-col justify-end">
-                  <h3 className="text-2xl mb-4">{article.title}</h3>
-                  <p className="mt-2">{article.content.substring(0, 100)}...</p>
-                  <button
-                    onClick={() => handleReadMore(article)}
-                    className="text-yellow-500 underline mt-4 inline-block self-end"
-                  >
-                    Read more &rarr;
-                  </button>
-                </div>
-              </div>
-            ))}
+                &larr; Back to Articles
+              </button>
+            </div>
           </div>
-        </>
-      )}
+        ) : (
+          /* MAIN BLOG LIST VIEW */
+          <div className="pt-20">
+            <h1 className="text-[#DD9735] text-4xl mb-16 tracking-widest uppercase">
+              Blog
+            </h1>
+
+            {/* Category Navigation */}
+            <div className="flex flex-wrap gap-8 mb-16 border-b border-white/5 pb-4">
+              {["All Articles", "Category 1", "Category 2", "Category 3"].map(
+                (cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    className={`text-xl transition-all ${
+                      activeCategory === cat
+                        ? "text-[#DD9735] border-b-2 border-[#DD9735]"
+                        : "text-gray-500 hover:text-white"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ),
+              )}
+            </div>
+
+            {/* Articles Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+              {filteredArticles.map((article, index) => (
+                <div key={index} className="flex flex-col group">
+                  {/* Article Image */}
+                  <div className="aspect-video overflow-hidden mb-6 border border-white/10 shadow-lg">
+                    <img
+                      src={article.imageUrl}
+                      alt={article.title}
+                      className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+                    />
+                  </div>
+
+                  {/* Article Headline */}
+                  <h3 className="text-[#DD9735] text-lg mb-4 leading-snug">
+                    {article.title}
+                  </h3>
+
+                  {/* Read More Link Aligned Right */}
+                  <div className="flex justify-end mt-auto">
+                    <button
+                      onClick={() => setSelectedArticle(article)}
+                      className="text-white text-xl border-b border-white hover:text-[#DD9735] hover:border-[#DD9735] transition-all"
+                    >
+                      Read more
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <style jsx>{`
+        .clip-hexagon {
+          clip-path: polygon(
+            25% 0%,
+            75% 0%,
+            100% 50%,
+            75% 100%,
+            25% 100%,
+            0% 50%
+          );
+        }
+      `}</style>
     </div>
   );
 };

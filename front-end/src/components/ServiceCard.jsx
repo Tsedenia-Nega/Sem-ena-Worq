@@ -41,13 +41,13 @@ const ServiceCard = ({ title, desc, index }) => {
                 size={24}
               />
             </div>
-            <span className="text-[#DD9735]/20 font-itim text-5xl group-hover:text-black/10 transition-colors">
+            <span className="text-[#DD9735]/20 font-itim text-4xl group-hover:text-black/10 transition-colors">
               0{index + 1}
             </span>
           </div>
 
           <div>
-            <h3 className="text-white text-3xl font-itim uppercase tracking-wider mb-3 group-hover:translate-x-1 transition-transform">
+            <h3 className="text-white text-2xl font-itim uppercase tracking-wider mb-3 group-hover:translate-x-1 transition-transform">
               {title}
             </h3>
             <p className="text-gray-400 text-base leading-relaxed group-hover:text-white/90 transition-colors line-clamp-3">

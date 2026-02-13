@@ -25,7 +25,7 @@ const Services = () => {
           {/* <h2 className="text-[#DD9735] font-itim text-lg uppercase tracking-[0.4em] mb-4">
             Elite Expertise
           </h2> */}
-          <h1 className="text-white text-5xl md:text-7xl font-bold leading-tight">
+          <h1 className="text-white text-7xl md:text-4xl font-bold leading-tight">
             Premium{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DD9735] to-[#f9d423]">
               Solutions

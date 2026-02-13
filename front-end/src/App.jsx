@@ -7,7 +7,7 @@ import Portfolio from "./pages/portfolio"
 import Login from "./pages/Login";
 import Services from "./pages/Services";
 import Contact from "./pages/Contact";
-
+import Testimonials from "./pages/Testimonials"; 
 const MainLayout = () => (
   <>
     <Navbar />
@@ -25,9 +25,9 @@ function App() {
             <Route path="/blog" element={<Blog />} />
             <Route path="/service" element={<Services />} />
             <Route path="/portfolio" element={<Portfolio />} />
-            <Route path="/contact" element={<Contact />} />
-          </Route>
-
+            <Route path="/testimonials" element={<Testimonials />} />
+          </Route>{" "}
+          <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="*" element={<div>404 Page Not Found</div>} />
         </Routes>

@@ -100,14 +100,14 @@ const Contact = () => {
         </div>
 
         {/* FOOTER */}
-        {/* FOOTER */}
+    
         <div className="mt-20 pt-10 border-t border-white/10 flex flex-row justify-between items-end">
           {/* Empty space to balance the right side if needed, or keep it as is for the layout */}
           <div className="flex-1 hidden lg:block"></div>
 
           {/* CENTER SECTION: Name & Socials */}
           <div className="flex flex-col items-center flex-1">
-            <h4 className="text-[#DD9735] font-itim text-lg uppercase tracking-[0.4em] mb-4">
+            <h4 className="text-[#DD9735] font-itim text-lg uppercase tracking-[0.1em] mb-4">
               SEM ENA WORQ
             </h4>
             <div className="flex gap-8 items-center text-[#DD9735]">
