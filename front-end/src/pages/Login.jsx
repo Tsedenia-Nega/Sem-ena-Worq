@@ -1,5 +1,5 @@
-// LoginPage.js
 
+import { Link } from "react-router-dom";
 import React from "react";
 import { FaUser, FaLock } from "react-icons/fa";
 import logo from "./../assets/Logo.PNG"; 
@@ -8,12 +8,14 @@ import Hexagons from "./../components/Hexagons";
 function LoginPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-black relative overflow-hidden">
-      <img
-        src={logo}
-        alt="Logo"
-        className="fixed top-5 left-9 w-16 h-16 z-50"
-      />
-      <Hexagons /> 
+      <Link to="/" className="fixed top-5 left-9 z-50">
+        <img
+          src={logo}
+          alt="Logo"
+          className="w-16 h-16 cursor-pointer hover:opacity-80 transition-opacity"
+        />
+      </Link>
+      <Hexagons />
       <div className="flex flex-col md:flex-row items-center w-full md:w-4/5 lg:w-3/4 xl:w-2/3 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
         <div className="hidden md:block md:w-1/2"></div>
         <div className="w-full md:w-1/2 bg-yellow-700 p-12 rounded-lg">
@@ -69,14 +71,14 @@ function LoginPage() {
                 Login
               </button>
             </div>
-             <div className="mt-4 text-center">
-               <a
+            <div className="mt-4 text-center">
+              <a
                 className="text-l text-yellow-400 hover:text-yellow-300"
                 href="#"
               >
-                 Create Account
-               </a>
-             </div>
+                Create Account
+              </a>
+            </div>
           </form>
         </div>
       </div>
