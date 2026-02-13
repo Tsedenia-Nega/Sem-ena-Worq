@@ -15,9 +15,7 @@ const MyPortfolio = () => {
 
   return (
     <div className="layout relative w-full h-screen overflow-hidden">
-      <div>
-        <Navbar />
-      </div>
+   
       <div>
          <Portfolio />
          </div>
