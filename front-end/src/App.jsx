@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Services from "./pages/Services";
 import Contact from "./pages/Contact";
 import Testimonials from "./pages/Testimonials"; 
+import AdminDashboard from "./pages/AdminDashboard";
 const MainLayout = () => (
   <>
     <Navbar />
@@ -26,8 +27,9 @@ function App() {
             <Route path="/service" element={<Services />} />
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/testimonials" element={<Testimonials />} />
+            <Route path="/contact" element={<Contact />} />
           </Route>{" "}
-          <Route path="/contact" element={<Contact />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="*" element={<div>404 Page Not Found</div>} />
         </Routes>

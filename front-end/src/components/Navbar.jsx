@@ -53,7 +53,7 @@ const Navbar = () => {
 
         <Link
           to="/login"
-          className="flex items-center space-x-1 text-gray-600 dark:text-gray-300 hover:text-[#DD9735] transition-colors"
+          className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-[#DD9735] transition-colors"
         >
           <UserCircle size={26} />
           <span className="hidden sm:inline font-medium">Login</span>

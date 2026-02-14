@@ -11,10 +11,10 @@ import {
 
 const Contact = () => {
   return (
-    <div className="min-h-screen bg-[#000000] text-white pt-14 pb-10 font-itim overflow-x-hidden">
+    <div className="min-h-screen bg-[#000000] text-white pt-10 pb-10 font-itim overflow-x-hidden">
       <div className="max-w-7xl mx-auto px-10 md:px-20 relative">
         {/* Main Title */}
-        <h1 className="text-[#DD9735] text-3xl mb-8 tracking-widest">
+        <h1 className="text-[#DD9735] text-center text-3xl mb-8 -tracking-tighter">
           CONTACT US
         </h1>
 
@@ -23,21 +23,21 @@ const Contact = () => {
           <div className="w-full lg:w-1/2 space-y-12 py-5 pl-4 md:pl-10">
             {/* Address */}
             <div className="flex items-center gap-6 transition-transform hover:scale-105">
-              <div className="w-16 h-16 md:w-20 md:h-20 bg-[#B87333] rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
-                <MapPin size={30} />
+              <div className="w-12 h-12 md:w-16 md:h-16 bg-[#B87333] rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
+                <MapPin size={28} />
               </div>
               <div className="space-y-1">
                 <p className="text-[#B87333] text-lg leading-none">Address</p>
                 <p className="text-sm md:text-base opacity-90 font-sans">
-                  25 street, amagvdgfs, addis ababa
+                  25 street, Bole, addis ababa
                 </p>
               </div>
             </div>
 
             {/* Phone - Slanted right */}
             <div className="flex items-center gap-6 lg:ml-20 transition-transform hover:scale-105">
-              <div className="w-16 h-16 md:w-20 md:h-20 bg-[#B87333] rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
-                <Phone size={30} />
+              <div className="w-12 h-12 md:w-16 md:h-16 bg-[#B87333] rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
+                <Phone size={28} />
               </div>
               <div className="space-y-1">
                 <p className="text-[#B87333] text-lg leading-none">Phone</p>
@@ -49,8 +49,8 @@ const Contact = () => {
 
             {/* Email - Slanted further right */}
             <div className="flex items-center gap-6 lg:ml-40 transition-transform hover:scale-105">
-              <div className="w-16 h-16 md:w-20 md:h-20 bg-[#B87333] rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
-                <Mail size={30} />
+              <div className="w-12 h-12 md:w-16 md:h-16 bg-[#B87333] rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
+                <Mail size={28} />
               </div>
               <div className="space-y-1">
                 <p className="text-[#B87333] text-lg leading-none">Email</p>
