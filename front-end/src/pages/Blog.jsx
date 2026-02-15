@@ -5,11 +5,16 @@ import image3 from "./../assets/img3.jpg";
 import image4 from "./../assets/img4.jpg";
 import image5 from "./../assets/img5.jpg";
 import image6 from "./../assets/img6.jpg";
-
+import image from "./../assets/image.jpg";
 const Blog = () => {
   const [activeCategory, setActiveCategory] = useState("All Articles");
   const [selectedArticle, setSelectedArticle] = useState(null);
-
+const hexagons = [
+  { id: 1, top: "-15%", left: "48%", rotation: "90deg" },
+  { id: 2, top: "30%", left: "58%", rotation: "90deg" },
+  { id: 3, top: "60%", left: "83%", rotation: "90deg" },
+  { id: 4, top: "75%", left: "50%", rotation: "90deg" },
+];
   const articles = [
     {
       category: "Category 1",
@@ -42,9 +47,7 @@ const Blog = () => {
 
   return (
     <div className="bg-[#000000] text-white min-h-screen pb-24 font-itim relative overflow-hidden">
-      {/* Background Decorative Hexagons */}
-      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 w-64 h-64 bg-[#DD9735]/5 clip-hexagon border border-[#DD9735]/10 -z-0" />
-      <div className="absolute bottom-10 right-10 w-48 h-48 bg-[#DD9735]/5 clip-hexagon border border-[#DD9735]/10 -z-0" />
+   
 
       <div className="max-w-7xl mx-auto px-10 md:px-20 relative z-10">
         {selectedArticle ? (
@@ -133,18 +136,28 @@ const Blog = () => {
         )}
       </div>
 
-      <style jsx>{`
-        .clip-hexagon {
-          clip-path: polygon(
-            25% 0%,
-            75% 0%,
-            100% 50%,
-            75% 100%,
-            25% 100%,
-            0% 50%
-          );
-        }
-      `}</style>
+     
+      {hexagons.map((hex) => (
+        <div
+          key={hex.id}
+          className="hexagon"
+          style={{
+            position: "fixed",
+            top: hex.top || "auto",
+            bottom: hex.bottom || "auto",
+            left: hex.left,
+            transform: `rotate(${hex.rotation})`,
+            zIndex: 1,
+            opacity: 0.2,
+          }}
+        >
+          <img
+            src={image}
+            alt={`Hexagon ${hex.id}`}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      ))}
     </div>
   );
 };

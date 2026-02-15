@@ -8,8 +8,14 @@ import {
   Facebook,
   Twitter,
 } from "lucide-react";
-
+import image from "./../assets/image.jpg";
 const Contact = () => {
+  const hexagons = [
+    { id: 1, top: "-15%", left: "48%", rotation: "90deg" },
+    { id: 2, top: "30%", left: "58%", rotation: "90deg" },
+    { id: 3, top: "60%", left: "83%", rotation: "90deg" },
+    { id: 4, top: "75%", left: "50%", rotation: "90deg" },
+  ];
   return (
     <div className="min-h-screen bg-[#000000] text-white pt-10 pb-10 font-itim overflow-x-hidden">
       <div className="max-w-7xl mx-auto px-10 md:px-20 relative">
@@ -100,7 +106,7 @@ const Contact = () => {
         </div>
 
         {/* FOOTER */}
-    
+
         <div className="mt-20 pt-10 border-t border-white/10 flex flex-row justify-between items-end">
           {/* Empty space to balance the right side if needed, or keep it as is for the layout */}
           <div className="flex-1 hidden lg:block"></div>
@@ -139,6 +145,27 @@ const Contact = () => {
           </div>
         </div>
       </div>
+      {hexagons.map((hex) => (
+        <div
+          key={hex.id}
+          className="hexagon"
+          style={{
+            position: "fixed",
+            top: hex.top || "auto",
+            bottom: hex.bottom || "auto",
+            left: hex.left,
+            transform: `rotate(${hex.rotation})`,
+            zIndex: 1,
+            opacity: 0.2,
+          }}
+        >
+          <img
+            src={image}
+            alt={`Hexagon ${hex.id}`}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      ))}
     </div>
   );
 };
