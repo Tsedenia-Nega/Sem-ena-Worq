@@ -1,49 +1,63 @@
 import mongoose from 'mongoose';
+ import sharp from "sharp";
 import BlogEntity from '../../Domain/blogEntity.js';
 class BlogController {
   constructor(blogRepository) {
     this.blogRepository = blogRepository;
   }
 
-  async createBlog(req, res) {
-    try {
-      const { title, content, author, tags, status } = req.body;
-      const image = req.file ? req.file.buffer : null;
+ 
 
-      if (!title || !content || !author) {
-        return res
-          .status(400)
-          .json({ error: "Title, content, and author are required." });
-      }
-
-      if (content.length < 10) {
-        return res
-          .status(400)
-          .json({ error: "Blog content must be at least 10 characters long." });
-      }
-
-      const blogEntity = new BlogEntity({
-        title,
-        content,
-        author,
-        tags,
-        status,
-        image,
-      });
-
-      try {
-        blogEntity.validate();
-      } catch (validationError) {
-        return res.status(400).json({ error: validationError.message });
-      }
-
-      const blog = await this.blogRepository.create(blogEntity);
-      res.status(201).json(blog);
-    } catch (error) {
-      console.error("Create blog error:", error.message);
-      res.status(400).json({ error: error.message });
+// Inside your BlogController class
+async createBlog(req, res) {
+  try {
+    const { title, content, author, tags, status } = req.body;
+    
+    let image = null;
+    if (req.file) {
+      // OPTIMIZE: Resize and convert to WebP for speed
+      image = await sharp(req.file.buffer)
+        .resize(1200) // Slightly larger for blog headers
+        .webp({ quality: 80 })
+        .toBuffer();
     }
+
+    const blogEntity = new BlogEntity({
+      title, content, author, tags, status, image
+    });
+
+    blogEntity.validate();
+    const blog = await this.blogRepository.create(blogEntity);
+    res.status(201).json(blog);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
+}
+
+// Add this helper to the class to use in your list/get methods
+convertImageToBase64(imageBuffer) {
+  if (imageBuffer && imageBuffer.data) {
+    const buffer = Buffer.isBuffer(imageBuffer) ? imageBuffer : Buffer.from(imageBuffer.data);
+    return `data:image/webp;base64,${buffer.toString("base64")}`;
+  }
+  return null;
+}
+
+async listBlogs(req, res) {
+  try {
+    const blogs = await this.blogRepository.findAll({ status: "published" });
+    
+    // Format blogs to include the Base64 string
+    const formattedBlogs = blogs.map(blog => ({
+      ...blog._doc,
+      image: this.convertImageToBase64(blog.image)
+    }));
+    
+    res.status(200).json(formattedBlogs);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
 
   async updateBlog(req, res) {
     try {
@@ -135,15 +149,7 @@ class BlogController {
   // ... (create, update, get, delete are already done)
 
   // GET /get - Public list (only published blogs)
-  async listBlogs(req, res) {
-    try {
-      // Filter by status: 'published' so guests don't see drafts
-      const blogs = await this.blogRepository.findAll({ status: "published" });
-      res.status(200).json(blogs);
-    } catch (error) {
-      res.status(400).json({ error: error.message });
-    }
-  }
+ 
 
   // GET /get/admin - Admin list (all blogs)
   async listBlogsAdmin(req, res) {
