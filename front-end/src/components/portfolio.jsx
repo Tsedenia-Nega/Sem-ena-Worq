@@ -7,8 +7,7 @@ const Portfolio = () => {
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // const IMAGE_PATH = "http://localhost:5000/uploads";
-
+  
   useEffect(() => {
     const fetchPortfolios = async () => {
       try {
@@ -72,10 +71,7 @@ const Portfolio = () => {
                       src={`${IMAGE_PATH}/${project.image}`}
                       alt={project.title}
                       className="w-full h-full object-cover"
-                      onError={(e) =>
-                        (e.target.src =
-                          "https://via.placeholder.com/400x300?text=No+Image")
-                      }
+                      
                     />
                   </div>
 

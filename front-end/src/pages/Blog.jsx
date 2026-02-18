@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import api from "../api/axios";
+import api, { IMAGE_PATH } from "../api/axios"; // 1. Import IMAGE_PATH
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, User, ArrowRight, ChevronLeft } from "lucide-react";
 
@@ -13,7 +13,6 @@ const Blog = () => {
     const fetchBlogs = async () => {
       try {
         const res = await api.get("/blogs/get");
-        // Ensure we handle different response shapes
         const data = Array.isArray(res.data) ? res.data : res.data.blogs || [];
         setArticles(data);
       } catch (err) {
@@ -25,18 +24,28 @@ const Blog = () => {
     fetchBlogs();
   }, []);
 
-  const filteredArticles = activeCategory === "All Articles"
-    ? articles
-    : articles.filter((art) => art.tags?.includes(activeCategory) || art.category === activeCategory);
+  const filteredArticles =
+    activeCategory === "All Articles"
+      ? articles
+      : articles.filter(
+          (art) =>
+            art.tags?.includes(activeCategory) ||
+            art.category === activeCategory,
+        );
 
-  if (loading) return <div className="min-h-screen bg-black flex items-center justify-center text-[#DD9735] tracking-widest uppercase">Loading Journal...</div>;
+  if (loading)
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center text-[#DD9735] tracking-widest uppercase">
+        Loading Journal...
+      </div>
+    );
 
   return (
     <div className="bg-[#050505] text-white min-h-screen pb-24 relative overflow-hidden font-sans">
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <AnimatePresence mode="wait">
           {selectedArticle ? (
-            /* --- FULL ARTICLE VIEW (Professional Reader) --- */
+            /* --- FULL ARTICLE VIEW --- */
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -75,13 +84,16 @@ const Blog = () => {
                 </div>
               </div>
 
+              {/* 2. Simplified Image for Full View */}
               <img
                 src={
-                  selectedArticle.image ||
-                  "https://via.placeholder.com/1200x600?text=No+Image"
+                  selectedArticle.image
+                    ? `${IMAGE_PATH}/${selectedArticle.image}`
+                    : "https://via.placeholder.com/1200x600?text=No+Image"
                 }
+                crossOrigin="anonymous"
                 className="w-full h-[400px] object-cover rounded-3xl mb-12 border border-white/10 shadow-2xl"
-                alt="header"
+                alt={selectedArticle.title}
               />
 
               <div className="prose prose-invert prose-orange max-w-none">
@@ -91,83 +103,28 @@ const Blog = () => {
               </div>
             </motion.div>
           ) : (
-            /* --- BLOG LIST VIEW (Editorial Grid) --- */
+            /* --- BLOG LIST VIEW --- */
             <div className="pt-20">
-              <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
-                <div>
-                  <h1 className="text-[#DD9735] text-sm tracking-[0.5em] uppercase mb-4">
-                    Our Journal
-                  </h1>
-                  <h2 className="text-5xl font-bold">Latest Insights.</h2>
-                </div>
+              {/* Header and Categories omitted for brevity, keep your existing code here */}
 
-                {/* Modern Category Pills */}
-                <div className="flex flex-wrap gap-3">
-                  {["All Articles", "Tech", "Design", "Strategy"].map((cat) => (
-                    <button
-                      key={cat}
-                      onClick={() => setActiveCategory(cat)}
-                      className={`px-6 py-2 rounded-full text-xs uppercase tracking-widest border transition-all ${
-                        activeCategory === cat
-                          ? "bg-[#DD9735] border-[#DD9735] text-black"
-                          : "border-white/10 text-gray-400 hover:border-[#DD9735]"
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 mt-16">
                 {filteredArticles.map((article) => (
                   <article key={article._id} className="group flex flex-col">
                     <div
                       className="relative h-64 overflow-hidden rounded-2xl mb-6 cursor-pointer"
                       onClick={() => setSelectedArticle(article)}
                     >
+                      {/* 3. Simplified Image for Grid Cards */}
                       <img
-                        src={(() => {
-                          if (!article.image)
-                            return "https://via.placeholder.com/800x600?text=No+Data+Found";
-
-                          // Check if the image is the MongoDB Buffer Object
-                          if (
-                            typeof article.image === "object" &&
-                            article.image.data
-                          ) {
-                            // This converts the array of numbers directly into a usable Blob URL
-                            const uint8Array = new Uint8Array(
-                              article.image.data,
-                            );
-                            const blob = new Blob([uint8Array], {
-                              type: "image/webp",
-                            });
-                            return URL.createObjectURL(blob);
-                          }
-
-                          // If it's already a string, ensure it has the prefix
-                          if (typeof article.image === "string") {
-                            return article.image.startsWith("data:")
-                              ? article.image
-                              : `data:image/webp;base64,${article.image}`;
-                          }
-
-                          return "https://via.placeholder.com/800x600?text=Invalid+Format";
-                        })()}
+                        src={
+                          article.image
+                            && `${IMAGE_PATH}/${article.image}`
+                        }
                         alt={article.title}
-                        onLoad={() =>
-                          console.log(
-                            `Image loaded successfully for: ${article.title}`,
-                          )
-                        }
-                        onError={(e) =>
-                          console.error(
-                            `Image failed for: ${article.title}. Source was:`,
-                            e.target.src.substring(0, 100),
-                          )
-                        }
-                        className="w-full h-full object-cover rounded-2xl"
+                        loading="lazy"
+                        crossOrigin="anonymous"
+                        className="w-full h-full object-cover rounded-2xl transition-transform duration-700 group-hover:scale-110"
+                        
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     </div>
