@@ -5,17 +5,10 @@ class ServiceController {
     this.serviceRepo = serviceRepo;
   }
 
-  convertImageToBase64(imageBuffer) {
-    if (imageBuffer) {
-      return `data:image/png;base64,${imageBuffer.toString("base64")}`;
-    }
-    return null;
-  }
-
   async createService(req, res) {
     try {
       const { title, description } = req.body;
-      const image = req.file ? req.file.buffer : null;
+      const image = req.file ? req.file.filename : null;
 
       if (!title || !description) {
         return res
@@ -45,34 +38,30 @@ class ServiceController {
     try {
       const { id } = req.params;
       const updatedFields = req.body;
-      const image = req.file ? req.file.buffer : null;
 
-      if (image) {
-        updatedFields.image = image;
+      // CHANGE: Use filename for updates
+      if (req.file) {
+        updatedFields.image = req.file.filename;
       }
 
       if (!id) {
-        return res
-          .status(400)
-          .json({ message: "Service ID is required for updates." });
+        return res.status(400).json({ message: "Service ID is required." });
       }
 
       const updatedService = await this.serviceRepo.updateService(
         id,
         updatedFields,
       );
+
       if (!updatedService) {
         return res.status(404).json({ message: "Service not found." });
       }
 
       res.status(200).json({ success: true, service: updatedService });
     } catch (err) {
-      res
-        .status(err.message.includes("not found") ? 404 : 500)
-        .json({ success: false, message: err.message });
+      res.status(500).json({ success: false, message: err.message });
     }
   }
-
   // Delete a service
   async deleteService(req, res) {
     try {
@@ -89,13 +78,11 @@ class ServiceController {
         return res.status(404).json({ message: "Service not found." });
       }
 
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: "Service deleted successfully",
-          deletedService,
-        });
+      res.status(200).json({
+        success: true,
+        message: "Service deleted successfully",
+        deletedService,
+      });
     } catch (err) {
       res
         .status(err.message.includes("not found") ? 404 : 500)
@@ -103,66 +90,27 @@ class ServiceController {
     }
   }
 
-  //  async listServices(req, res) {
-  //   try {
-  //     const page = parseInt(req.query.page, 10) || 1;
-  //     const limit = parseInt(req.query.limit, 10) || 10;
-
-  //     if (page <= 0 || limit <= 0) {
-  //       return res.status(400).json({ success: false, message: "Page and limit must be positive integers." });
-  //     }
-
-  //     const services = await this.serviceRepo.getAllServices(page, limit);
-  //     const total = await this.serviceRepo.count();
-
-  //     const result = {
-  //       success: true,
-  //       services,
-  //       pagination: {
-  //         page,
-  //         limit,
-  //         total,
-  //         totalPages: Math.ceil(total / limit),
-  //       },
-  //     };
-
-  //     res.json(result);
-  //   } catch (err) {
-  //     res.status(500).json({ success: false, message: "Unexpected error" });
-  //   }
-  // }
+ 
   async listServices(req, res) {
     try {
       const page = parseInt(req.query.page, 10) || 1;
       const limit = parseInt(req.query.limit, 10) || 10;
 
       if (page <= 0 || limit <= 0) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            message: "Page and limit must be positive integers.",
-          });
+        return res.status(400).json({
+          success: false,
+          message: "Page and limit must be positive integers.",
+        });
       }
 
       const services = await this.serviceRepo.getAllServices(page, limit);
       const total = await this.serviceRepo.count();
 
-      // MAP through the services to convert buffers to Base64 strings
-      const formattedServices = services.map((service) => {
-        return {
-          _id: service._id,
-          title: service.title,
-          description: service.description,
-          // Using your existing helper method
-          image: this.convertImageToBase64(service.image),
-          createdAt: service.createdAt,
-        };
-      });
+      
 
       res.json({
         success: true,
-        services: formattedServices, // Send the formatted version!
+        services ,
         pagination: {
           page,
           limit,
@@ -188,18 +136,11 @@ class ServiceController {
         return res.status(404).json({ message: "Service not found." });
       }
 
-      const imageUrl = this.convertImageToBase64(service.image);
+      // const imageUrl = this.convertImageToBase64(service.image);
 
       res.status(200).json({
         success: true,
-        service: {
-          id: service._id,
-          title: service.title,
-          description: service.description,
-          image: imageUrl,
-          createdAt: service.createdAt,
-          updatedAt: service.updatedAt,
-        },
+        service,
       });
     } catch (err) {
       res.status(500).json({ success: false, message: err.message });
