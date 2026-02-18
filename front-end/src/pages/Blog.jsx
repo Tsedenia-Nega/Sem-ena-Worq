@@ -1,163 +1,210 @@
-import React, { useState } from "react";
-import image1 from "./../assets/img1.jpg";
-import image2 from "./../assets/img2.jpg";
-import image3 from "./../assets/img3.jpg";
-import image4 from "./../assets/img4.jpg";
-import image5 from "./../assets/img5.jpg";
-import image6 from "./../assets/img6.jpg";
-import image from "./../assets/image.jpg";
+import React, { useState, useEffect } from "react";
+import api from "../api/axios";
+import { motion, AnimatePresence } from "framer-motion";
+import { Calendar, User, ArrowRight, ChevronLeft } from "lucide-react";
+
 const Blog = () => {
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All Articles");
   const [selectedArticle, setSelectedArticle] = useState(null);
-const hexagons = [
-  { id: 1, top: "-15%", left: "48%", rotation: "90deg" },
-  { id: 2, top: "30%", left: "58%", rotation: "90deg" },
-  { id: 3, top: "60%", left: "83%", rotation: "90deg" },
-  { id: 4, top: "75%", left: "50%", rotation: "90deg" },
-];
-  const articles = [
-    {
-      category: "Category 1",
-      title: "Article name- headline for an article",
-      content: "This is a brief summary of Article 1.",
-      detailedDescription: "This is the detailed description of Article 1.",
-      imageUrl: image1,
-    },
-    {
-      category: "Category 2",
-      title: "Article name- headline for an article",
-      content: "This is a brief summary of Article 2.",
-      detailedDescription: "This is the detailed description of Article 2.",
-      imageUrl: image2,
-    },
-    {
-      category: "Category 3",
-      title: "Article name- headline for an article",
-      content: "This is a brief summary of Article 3.",
-      detailedDescription: "This is the detailed description of Article 3.",
-      imageUrl: image3,
-    },
-    // ... add other articles as needed
-  ];
 
-  const filteredArticles =
-    activeCategory === "All Articles"
-      ? articles
-      : articles.filter((article) => article.category === activeCategory);
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const res = await api.get("/blogs/get");
+        // Ensure we handle different response shapes
+        const data = Array.isArray(res.data) ? res.data : res.data.blogs || [];
+        setArticles(data);
+      } catch (err) {
+        console.error("Error loading blogs", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBlogs();
+  }, []);
+
+  const filteredArticles = activeCategory === "All Articles"
+    ? articles
+    : articles.filter((art) => art.tags?.includes(activeCategory) || art.category === activeCategory);
+
+  if (loading) return <div className="min-h-screen bg-black flex items-center justify-center text-[#DD9735] tracking-widest uppercase">Loading Journal...</div>;
 
   return (
-    <div className="bg-[#000000] text-white min-h-screen pb-24 font-itim relative overflow-hidden">
-   
-
-      <div className="max-w-7xl mx-auto px-10 md:px-20 relative z-10">
-        {selectedArticle ? (
-          /* DETAILED ARTICLE VIEW */
-          <div className="pt-20">
-            <h1 className="text-[#DD9735] text-4xl mb-12 tracking-widest uppercase">
-              Blog
-            </h1>
-            <div className="flex flex-col items-center">
-              <img
-                src={selectedArticle.imageUrl}
-                alt={selectedArticle.title}
-                className="w-full max-w-3xl rounded-sm mb-10 border border-[#DD9735]/20 shadow-2xl"
-              />
-              <h3 className="text-[#DD9735] text-3xl mb-6">
-                {selectedArticle.title}
-              </h3>
-              <p className="text-gray-300 text-lg leading-relaxed max-w-3xl text-center">
-                {selectedArticle.detailedDescription}
-              </p>
+    <div className="bg-[#050505] text-white min-h-screen pb-24 relative overflow-hidden font-sans">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+        <AnimatePresence mode="wait">
+          {selectedArticle ? (
+            /* --- FULL ARTICLE VIEW (Professional Reader) --- */
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="pt-20 max-w-4xl mx-auto"
+            >
               <button
                 onClick={() => setSelectedArticle(null)}
-                className="mt-12 text-[#DD9735] border-b border-[#DD9735] pb-1 hover:text-white hover:border-white transition-all"
+                className="flex items-center gap-2 text-gray-500 hover:text-[#DD9735] transition-colors mb-8 group"
               >
-                &larr; Back to Articles
+                <ChevronLeft
+                  size={20}
+                  className="group-hover:-translate-x-1 transition-transform"
+                />{" "}
+                Back to Journal
               </button>
-            </div>
-          </div>
-        ) : (
-          /* MAIN BLOG LIST VIEW */
-          <div className="pt-20">
-            <h1 className="text-[#DD9735] text-4xl mb-16 tracking-widest uppercase">
-              Blog
-            </h1>
 
-            {/* Category Navigation */}
-            <div className="flex flex-wrap gap-8 mb-16 border-b border-white/5 pb-4">
-              {["All Articles", "Category 1", "Category 2", "Category 3"].map(
-                (cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setActiveCategory(cat)}
-                    className={`text-xl transition-all ${
-                      activeCategory === cat
-                        ? "text-[#DD9735] border-b-2 border-[#DD9735]"
-                        : "text-gray-500 hover:text-white"
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ),
-              )}
-            </div>
-
-            {/* Articles Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-              {filteredArticles.map((article, index) => (
-                <div key={index} className="flex flex-col group">
-                  {/* Article Image */}
-                  <div className="aspect-video overflow-hidden mb-6 border border-white/10 shadow-lg">
-                    <img
-                      src={article.imageUrl}
-                      alt={article.title}
-                      className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
-                    />
+              <div className="space-y-6 mb-12">
+                <div className="flex items-center gap-4 text-[#DD9735] text-sm tracking-widest uppercase">
+                  <span>{selectedArticle.category || "Insight"}</span>
+                  <span className="w-10 h-[1px] bg-[#DD9735]/30"></span>
+                  <span>
+                    {new Date(selectedArticle.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+                <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+                  {selectedArticle.title}
+                </h1>
+                <div className="flex items-center gap-6 text-gray-400 text-sm">
+                  <div className="flex items-center gap-2">
+                    <User size={16} /> {selectedArticle.author || "Admin"}
                   </div>
-
-                  {/* Article Headline */}
-                  <h3 className="text-[#DD9735] text-lg mb-4 leading-snug">
-                    {article.title}
-                  </h3>
-
-                  {/* Read More Link Aligned Right */}
-                  <div className="flex justify-end mt-auto">
-                    <button
-                      onClick={() => setSelectedArticle(article)}
-                      className="text-white text-xl border-b border-white hover:text-[#DD9735] hover:border-[#DD9735] transition-all"
-                    >
-                      Read more
-                    </button>
+                  <div className="flex items-center gap-2">
+                    <Calendar size={16} /> 5 min read
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+              </div>
 
-     
-      {hexagons.map((hex) => (
-        <div
-          key={hex.id}
-          className="hexagon"
-          style={{
-            position: "fixed",
-            top: hex.top || "auto",
-            bottom: hex.bottom || "auto",
-            left: hex.left,
-            transform: `rotate(${hex.rotation})`,
-            zIndex: 1,
-            opacity: 0.2,
-          }}
-        >
-          <img
-            src={image}
-            alt={`Hexagon ${hex.id}`}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      ))}
+              <img
+                src={
+                  selectedArticle.image ||
+                  "https://via.placeholder.com/1200x600?text=No+Image"
+                }
+                className="w-full h-[400px] object-cover rounded-3xl mb-12 border border-white/10 shadow-2xl"
+                alt="header"
+              />
+
+              <div className="prose prose-invert prose-orange max-w-none">
+                <p className="text-xl text-gray-300 leading-relaxed first-letter:text-5xl first-letter:font-bold first-letter:text-[#DD9735] first-letter:mr-3 first-letter:float-left">
+                  {selectedArticle.content}
+                </p>
+              </div>
+            </motion.div>
+          ) : (
+            /* --- BLOG LIST VIEW (Editorial Grid) --- */
+            <div className="pt-20">
+              <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+                <div>
+                  <h1 className="text-[#DD9735] text-sm tracking-[0.5em] uppercase mb-4">
+                    Our Journal
+                  </h1>
+                  <h2 className="text-5xl font-bold">Latest Insights.</h2>
+                </div>
+
+                {/* Modern Category Pills */}
+                <div className="flex flex-wrap gap-3">
+                  {["All Articles", "Tech", "Design", "Strategy"].map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => setActiveCategory(cat)}
+                      className={`px-6 py-2 rounded-full text-xs uppercase tracking-widest border transition-all ${
+                        activeCategory === cat
+                          ? "bg-[#DD9735] border-[#DD9735] text-black"
+                          : "border-white/10 text-gray-400 hover:border-[#DD9735]"
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+                {filteredArticles.map((article) => (
+                  <article key={article._id} className="group flex flex-col">
+                    <div
+                      className="relative h-64 overflow-hidden rounded-2xl mb-6 cursor-pointer"
+                      onClick={() => setSelectedArticle(article)}
+                    >
+                      <img
+                        src={(() => {
+                          if (!article.image)
+                            return "https://via.placeholder.com/800x600?text=No+Data+Found";
+
+                          // Check if the image is the MongoDB Buffer Object
+                          if (
+                            typeof article.image === "object" &&
+                            article.image.data
+                          ) {
+                            // This converts the array of numbers directly into a usable Blob URL
+                            const uint8Array = new Uint8Array(
+                              article.image.data,
+                            );
+                            const blob = new Blob([uint8Array], {
+                              type: "image/webp",
+                            });
+                            return URL.createObjectURL(blob);
+                          }
+
+                          // If it's already a string, ensure it has the prefix
+                          if (typeof article.image === "string") {
+                            return article.image.startsWith("data:")
+                              ? article.image
+                              : `data:image/webp;base64,${article.image}`;
+                          }
+
+                          return "https://via.placeholder.com/800x600?text=Invalid+Format";
+                        })()}
+                        alt={article.title}
+                        onLoad={() =>
+                          console.log(
+                            `Image loaded successfully for: ${article.title}`,
+                          )
+                        }
+                        onError={(e) =>
+                          console.error(
+                            `Image failed for: ${article.title}. Source was:`,
+                            e.target.src.substring(0, 100),
+                          )
+                        }
+                        className="w-full h-full object-cover rounded-2xl"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    </div>
+
+                    <div className="flex items-center gap-3 text-[#DD9735] text-[10px] tracking-[0.2em] uppercase mb-4">
+                      <span>
+                        {new Date(article.createdAt).toLocaleDateString()}
+                      </span>
+                      <span className="w-4 h-[1px] bg-[#DD9735]"></span>
+                      <span>{article.category || "Article"}</span>
+                    </div>
+
+                    <h3
+                      className="text-2xl font-bold mb-4 line-clamp-2 group-hover:text-[#DD9735] transition-colors cursor-pointer"
+                      onClick={() => setSelectedArticle(article)}
+                    >
+                      {article.title}
+                    </h3>
+
+                    <p className="text-gray-400 text-sm leading-relaxed line-clamp-3 mb-6">
+                      {article.content}
+                    </p>
+
+                    <button
+                      onClick={() => setSelectedArticle(article)}
+                      className="mt-auto flex items-center gap-2 text-white font-bold text-sm group-hover:gap-4 transition-all"
+                    >
+                      READ MORE{" "}
+                      <ArrowRight size={16} className="text-[#DD9735]" />
+                    </button>
+                  </article>
+                ))}
+              </div>
+            </div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 };

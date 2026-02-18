@@ -1,14 +1,18 @@
 import axios from "axios";
 
 // 1. Create the instance
+export const BASE_URL = "http://localhost:5000"; 
+
 const api = axios.create({
-  baseURL: "http://localhost:5000/sem&worq",
-  withCredentials: true, // Required for HttpOnly Cookies (Refresh Token)
+  baseURL: `${BASE_URL}/sem&worq`,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
+// Create a central Image Path constant
+export const IMAGE_PATH = `${BASE_URL}/uploads`;
 // 2. Request Interceptor: Attach Access Token to every outgoing request
 api.interceptors.request.use(
   (config) => {

@@ -1,47 +1,42 @@
 import React from "react";
-import "./../components/layout.css"; 
-import image from "./../assets/image.jpg";
+import "./../components/layout.css";
+import hexImage from "./../assets/image.jpg";
 import Navbar from "../components/Navbar";
 import Portfolio from "../components/Portfolio";
 
-
 const MyPortfolio = () => {
+  // Same hexagon data...
   const hexagons = [
-    { id: 1, top: "-15%", left: "48%", rotation: "90deg"},
+    { id: 1, top: "-15%", left: "48%", rotation: "90deg" },
     { id: 2, top: "30%", left: "58%", rotation: "90deg" },
     { id: 3, top: "60%", left: "83%", rotation: "90deg" },
     { id: 4, top: "75%", left: "50%", rotation: "90deg" },
   ];
 
   return (
-    <div className="layout relative w-full h-screen overflow-hidden">
-   
-      <div>
-         <Portfolio />
-         </div>
+    
+    <div className="layout relative w-full  bg-[#0d0d0d] ">
       
+      <div className="relative ">
+        <Portfolio />
+      </div>
+
+      {/* Decorative Hexagons */}
       {hexagons.map((hex) => (
         <div
           key={hex.id}
-          className="hexagon"
+          className="hexagon pointer-events-none"
           style={{
             position: "fixed",
-            top: hex.top || "auto", 
-            bottom: hex.bottom || "auto", 
+            top: hex.top,
             left: hex.left,
             transform: `rotate(${hex.rotation})`,
             zIndex: 1,
-            opacity: 0.2, 
+            opacity: 0.1,
           }}
         >
-          <img
-            src={image}
-            alt={`Hexagon ${hex.id}`}
-            className="w-full h-full object-cover"
-          />
+          <img src={hexImage} alt="" className="w-full h-full object-cover" />
         </div>
-        
-
       ))}
     </div>
   );

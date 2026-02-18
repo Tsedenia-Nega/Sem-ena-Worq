@@ -1,123 +1,127 @@
-import React, { useState } from "react";
-import { MoveUpRight, ArrowLeft, Calendar, Tag, Cpu } from "lucide-react";
-import img11 from "../assets/img11.jpg";
-import img12 from "../assets/img12.jpg";
-import img13 from "../assets/img13.jpg";
+import React, { useState, useEffect } from "react";
+import api,{IMAGE_PATH}from "../api/axios"; // Importing your custom axios instance
+import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 
 const Portfolio = () => {
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const projects = [
-    {
-      id: 1,
-      title: "Nano Banana",
-      category: "Golden Helix Study",
-      image: img11,
-      date: "Feb 2026",
-      description:
-        "A deep dive into the molecular structure of the Golden Helix. This project involved high-fidelity 3D rendering and data visualization for the agricultural tech sector. We focused on the intersection of biology and premium branding.",
-      stack: ["React", "Three.js", "Tailwind CSS"],
-    },
-    // ... rest of your projects
-  ];
+  // const IMAGE_PATH = "http://localhost:5000/uploads";
+
+  useEffect(() => {
+    const fetchPortfolios = async () => {
+      try {
+        const res = await api.get("/portfolio/get");
+        setProjects(res.data.portfolios || []);
+      } catch (err) {
+        console.error("Error loading portfolio:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPortfolios();
+  }, []);
+
+  const nextSlide = () =>
+    setCurrentIndex((prev) => (prev + 1) % projects.length);
+  const prevSlide = () =>
+    setCurrentIndex((prev) => (prev - 1 + projects.length) % projects.length);
+
+  if (loading)
+    return (
+      <div className="flex items-center justify-center py-40 text-[#DD9735]">
+        <Loader2 className="animate-spin" size={40} />
+      </div>
+    );
 
   return (
-    <div className="min-h-screen bg-black text-white py-12 px-6 md:px-12 font-itim relative overflow-hidden">
-      <div className="max-w-6xl mx-auto relative z-10">
-        {!selectedProject ? (
-          /* GRID VIEW */
-          <div className="animate-in fade-in duration-700">
-            {/* Header */}
-            <div className="mb-16">
-              <h1 className="text-[#DD9735] text-4xl mb-2 tracking-widest uppercase">
-                Portfolio
-              </h1>
-              <div className="h-1 w-16 bg-[#DD9735]" />
-            </div>
+    <div className="relative w-full bg-[#0d0d0d] flex flex-col items-center py-5 px-4 font-itim">
+      <h1 className="text-white text-5xl font-bold mb-6 tracking-tight">
+        Portfolio
+      </h1>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {projects.map((project) => (
+      <div className="relative w-full max-w-4xl flex items-center justify-center px-4">
+        <button
+          onClick={prevSlide}
+          className="absolute left-0 md:left-[-40px] z-50 p-2 text-[#DD9735] hover:scale-110 transition-all bg-black/40 rounded-full border border-white/5 backdrop-blur-md"
+          style={{ top: "50%", transform: "translateY(-50%)" }}
+        >
+          <ChevronLeft size={44} strokeWidth={1.5} />
+        </button>
+
+        <div className="flex gap-4 items-center justify-center w-full relative">
+          {projects.length > 0 ? (
+            projects.map((project, index) => {
+              const isCenter = index === currentIndex;
+              const isLeft =
+                index ===
+                (currentIndex - 1 + projects.length) % projects.length;
+              const isRight = index === (currentIndex + 1) % projects.length;
+
+              if (!isCenter && !isLeft && !isRight) return null;
+
+              return (
                 <div
-                  key={project.id}
-                  className="group cursor-pointer"
-                  onClick={() => setSelectedProject(project)}
+                  key={project._id}
+                  className={`transition-all duration-700 ease-in-out rounded-2xl overflow-hidden flex flex-col ${isCenter ? "w-[300px] sm:w-[340px] h-[65vh] max-h-[480px] min-h-[400px] z-20 opacity-100 shadow-2xl scale-100" : "w-[240px] h-[55vh] max-h-[400px] min-h-[350px] opacity-20 scale-90 blur-[1px] hidden md:flex"} bg-gradient-to-b from-[#A67C45] via-[#734f26] to-[#1a1107] border border-white/10`}
                 >
-                  <div className="relative aspect-[3/4] overflow-hidden rounded-xl border border-white/5 bg-[#111]">
+                  <div className="h-[40%] w-full bg-black/40">
                     <img
-                      src={project.image}
+               
+                      src={`${IMAGE_PATH}/${project.image}`}
                       alt={project.title}
-                      className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+                      className="w-full h-full object-cover"
+                      onError={(e) =>
+                        (e.target.src =
+                          "https://via.placeholder.com/400x300?text=No+Image")
+                      }
                     />
-                    <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-all" />
                   </div>
-                  <div className="mt-4">
-                    <p className="text-[#DD9735] text-[10px] uppercase tracking-[0.3em] mb-1">
-                      {project.category}
-                    </p>
-                    <h3 className="text-xl text-white group-hover:text-[#DD9735] transition-colors">
+
+                  <div className="p-6 flex flex-col flex-grow text-white">
+                    <h3 className="text-xl font-bold mb-2 truncate">
                       {project.title}
                     </h3>
+                    <p className="text-xs leading-relaxed font-light text-white/80 line-clamp-4 italic border-l-2 border-[#DD9735]/40 pl-4">
+                      {project.description}
+                    </p>
+                    <div className="mt-auto flex justify-between items-center opacity-30 pt-2">
+                      <span className="text-[10px] font-serif italic">r</span>
+                      <span className="text-[10px] font-mono">
+                        0{index + 1}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              ))}
+              );
+            })
+          ) : (
+            <div className="text-white/20 uppercase tracking-[0.3em]">
+              Database empty
             </div>
-          </div>
-        ) : (
-          /* COMPACT DETAIL VIEW */
-          <div className="animate-in fade-in zoom-in-95 duration-500">
-            <button
-              onClick={() => setSelectedProject(null)}
-              className="flex items-center gap-2 text-gray-500 hover:text-[#DD9735] transition-colors mb-8 uppercase tracking-tighter text-xs"
-            >
-              <ArrowLeft size={16} /> Back
-            </button>
+          )}
+        </div>
 
-            <div className="flex flex-col lg:flex-row gap-12 items-center lg:items-start bg-[#0A0A0A] p-6 md:p-10 rounded-3xl border border-white/5 shadow-2xl">
-              {/* IMAGE COLUMN: Constrained Height */}
-              <div className="w-full lg:w-5/12 max-h-[60vh] overflow-hidden rounded-2xl shadow-inner border border-[#DD9735]/20">
-                <img
-                  src={selectedProject.image}
-                  className="w-full h-full object-cover"
-                  alt={selectedProject.title}
-                />
-              </div>
+        <button
+          onClick={nextSlide}
+          className="absolute right-0 md:right-[-40px] z-50 p-2 text-[#DD9735] hover:scale-110 transition-all bg-black/40 rounded-full border border-white/5 backdrop-blur-md"
+          style={{ top: "50%", transform: "translateY(-50%)" }}
+        >
+          <ChevronRight size={44} strokeWidth={1.5} />
+        </button>
+      </div>
 
-              {/* CONTENT COLUMN */}
-              <div className="w-full lg:w-7/12 flex flex-col justify-center">
-                <span className="text-[#DD9735] text-xs font-bold uppercase tracking-widest mb-2">
-                  {selectedProject.category}
-                </span>
-                <h2 className="text-white text-4xl md:text-5xl font-bold mb-6">
-                  {selectedProject.title}
-                </h2>
-
-                <div className="flex gap-4 mb-8">
-                  <div className="bg-white/5 px-3 py-1 rounded text-[10px] text-gray-400 flex items-center gap-2">
-                    <Calendar size={12} /> {selectedProject.date}
-                  </div>
-                  <div className="bg-white/5 px-3 py-1 rounded text-[10px] text-gray-400 flex items-center gap-2">
-                    <Cpu size={12} /> Tech Driven
-                  </div>
-                </div>
-
-                <p className="text-gray-400 text-lg leading-relaxed mb-8 border-l-2 border-[#DD9735]/30 pl-6 italic">
-                  {selectedProject.description}
-                </p>
-
-                <div className="flex flex-wrap gap-2">
-                  {selectedProject.stack?.map((tech) => (
-                    <span
-                      key={tech}
-                      className="text-[10px] border border-white/10 px-3 py-1 rounded text-gray-500 uppercase"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+      
+<div className="flex gap-3 mt-12">
+        {projects.map((_, i) => (
+          <button
+            key={i}
+            className={`transition-all duration-500 rounded-full h-2 
+              ${i === currentIndex ? "w-10 bg-[#DD9735]" : "w-2 bg-white/10"}`}
+            onClick={() => setCurrentIndex(i)}
+          />
+        ))}
       </div>
     </div>
   );
