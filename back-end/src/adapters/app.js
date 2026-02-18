@@ -5,6 +5,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
 
+import { fileURLToPath } from "url";
 // Import Database and Routes
 import connectToDatabase from "../Infrastructures/dataBase.js";
 // nodemo
@@ -41,7 +42,22 @@ app.use("/sem&worq/testimony", testimonyRoutes);
 app.use("/sem&worq/contacts", contactRoutes);
 app.use("/sem&worq/portfolio", portfloio);
 
-// Global Error Handler
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Go up TWO levels: out of 'adapters', then out of 'src'
+const rootUploadsPath = path.join(__dirname, "..", "..", "uploads");
+
+
+app.use(
+  "/uploads",
+  express.static(rootUploadsPath, {
+    maxAge: "1y",
+    etag: true,
+  }),
+);
 app.use((err, req, res, next) => {
   console.error("Error:", err.stack || err.message);
   res.status(err.status || 500).json({

@@ -1,131 +1,116 @@
+import PortfolioEntity from "../../Domain/portfolioEntity.js";
 
-import PortfolioEntity from '../../Domain/portfolioEntity.js';
 class PortfolioController {
-    constructor(repository) {
-        this.repository = repository;
-    }
+  constructor(repository) {
+    this.repository = repository;
+  }
 
-    async listPortfolios(req, res) {
-        try {
-            const { page = 1, limit = 10 } = req.query || {};  
-
-            const parsedPage = parseInt(page, 10);
-            const parsedLimit = parseInt(limit, 10);
-
-            if (isNaN(parsedPage) || parsedPage < 1) {
-                throw new Error("Page must be a positive integer.");
-            }
-
-            if (isNaN(parsedLimit) || parsedLimit < 1) {
-                throw new Error("Limit must be a positive integer.");
-            }
-
-            const portfolios = await this.repository.findAll(parsedPage, parsedLimit);
-            const total = await this.repository.count();
-
-            const result = {
-                portfolios,
-                pagination: {
-                    page: parsedPage,
-                    limit: parsedLimit,
-                    total,
-                    totalPages: Math.ceil(total / parsedLimit),
-                },
-            };
-
-            res.json(result);
-        } catch (error) {
-            console.error("Error in PortfolioController.listPortfolios:", error);
-
-            return res.status(400).json({ error: error.message || "Database error" });
-        }
-    }
-
-
- async getPortfolioById(req, res) {
+  async listPortfolios(req, res) {
     try {
-        const { id } = req.params;
+      const { page = 1, limit = 10 } = req.query || {};
+      const parsedPage = parseInt(page, 10);
+      const parsedLimit = parseInt(limit, 10);
 
-        const portfolio = await this.repository.findById(id);
+      if (isNaN(parsedPage) || parsedPage < 1)
+        throw new Error("Page must be a positive integer.");
+      if (isNaN(parsedLimit) || parsedLimit < 1)
+        throw new Error("Limit must be a positive integer.");
 
-        if (!portfolio) {
-            return res.status(404).json({ error: "Portfolio not found" });
-        }
+      const portfolios = await this.repository.findAll(parsedPage, parsedLimit);
+      const total = await this.repository.count();
 
-        // Convert Mongoose document to plain object before processing the image
-        const portfolioObj = portfolio.toObject();
+      // NOTE: We no longer need to convert images to Base64 here.
+      // The frontend will use: src={`http://localhost:5000/uploads/${portfolio.image}`}
 
-        const imageBase64 = portfolioObj.image
-            ? `data:image/jpeg;base64,${portfolioObj.image.toString("base64")}`
-            : null;
+      const result = {
+        portfolios,
+        pagination: {
+          page: parsedPage,
+          limit: parsedLimit,
+          total,
+          totalPages: Math.ceil(total / parsedLimit),
+        },
+      };
 
-        res.status(200).json({
-            ...portfolioObj,
-            image: imageBase64,
-        });
+      res.json(result);
     } catch (error) {
-        console.error("Error in PortfolioController.getPortfolioById:", error.message, error.stack);
-        res.status(500).json({ error: "Failed to retrieve portfolio" });
+      console.error("Error in PortfolioController.listPortfolios:", error);
+      return res.status(400).json({ error: error.message || "Database error" });
     }
-}
+  }
 
+  async getPortfolioById(req, res) {
+    try {
+      const { id } = req.params;
+      const portfolio = await this.repository.findById(id);
 
+      if (!portfolio) {
+        return res.status(404).json({ error: "Portfolio not found" });
+      }
 
-    async createPortfolio(req, res) {
-        try {
-            const { title, description, tags, visibility } = req.body;
-            const image = req.file ? req.file.buffer : null; 
-
-            const portfolioData = { title, description, tags, visibility, image };
-            const portfolioEntity = new PortfolioEntity(portfolioData);
-
-            portfolioEntity.validate(); 
-
-            const result = await this.repository.create(portfolioData); 
-
-            res.status(201).json(result);
-        } catch (error) {
-            console.error("Error in PortfolioController.createPortfolio:", error);
-
-            if (error.message.includes("must be")) {
-                return res.status(400).json({ error: error.message });
-            }
-
-            return res.status(400).json({ error: "Database error" });
-        }
+      // EDIT: Removed the Base64 conversion. Just send the object.
+      res.status(200).json(portfolio);
+    } catch (error) {
+      console.error(
+        "Error in PortfolioController.getPortfolioById:",
+        error.message,
+      );
+      res.status(500).json({ error: "Failed to retrieve portfolio" });
     }
+  }
 
+  async createPortfolio(req, res) {
+    try {
+      const { title, description, tags, visibility } = req.body;
 
+      // EDIT: Use req.file.filename instead of buffer
+      const image = req.file ? req.file.filename : null;
 
-    async updatePortfolio(req, res) {
-        try {
-            const { id } = req.params;
-            const updatedData = req.body;
-            if (req.file) {
-                updatedData.image = req.file.buffer; // Updating image as Buffer
-            }
+      const portfolioData = { title, description, tags, visibility, image };
+      const portfolioEntity = new PortfolioEntity(portfolioData);
 
-            const portfolioEntity = new PortfolioEntity(updatedData);
-            portfolioEntity.validateOnUpdate(); // Validate on update
+      portfolioEntity.validate();
 
-            const result = await this.repository.updateById(id, updatedData);
-            res.json({ message: "Portfolio Updated Successfully.", updated: result });
-        } catch (error) {
-            console.error("Error in PortfolioController.updatePortfolio:", error);
-            res.status(400).json({ error: error.message });
-        }
+      const result = await this.repository.create(portfolioData);
+
+      res.status(201).json(result);
+    } catch (error) {
+      console.error("Error in PortfolioController.createPortfolio:", error);
+      return res.status(400).json({ error: error.message || "Database error" });
     }
+  }
 
-    async deletePortfolio(req, res) {
-        try {
-            const { id } = req.params;
-            const result = await this.repository.deleteById(id);
-            res.json({ message: "Portfolio deleted successfully.", result });
-        } catch (error) {
-            console.error("Error in PortfolioController.deletePortfolio:", error);
-            res.status(400).json({ error: error.message });
-        }
+  async updatePortfolio(req, res) {
+    try {
+      const { id } = req.params;
+      const updatedData = { ...req.body };
+
+      // EDIT: Use req.file.filename if a new file is uploaded
+      if (req.file) {
+        updatedData.image = req.file.filename;
+      }
+
+      const portfolioEntity = new PortfolioEntity(updatedData);
+      portfolioEntity.validateOnUpdate();
+
+      const result = await this.repository.updateById(id, updatedData);
+      res.json({ message: "Portfolio Updated Successfully.", updated: result });
+    } catch (error) {
+      console.error("Error in PortfolioController.updatePortfolio:", error);
+      res.status(400).json({ error: error.message });
     }
+  }
+
+  async deletePortfolio(req, res) {
+    try {
+      const { id } = req.params;
+      const result = await this.repository.deleteById(id);
+      res.json({ message: "Portfolio deleted successfully.", result });
+    } catch (error) {
+      console.error("Error in PortfolioController.deletePortfolio:", error);
+      res.status(400).json({ error: error.message });
+    }
+  }
 }
 
 export default PortfolioController;
