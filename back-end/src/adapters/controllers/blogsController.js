@@ -36,18 +36,47 @@ class BlogController {
       res.status(400).json({ error: error.message });
     }
   }
+  async listBlogsAdmin(req, res) {
+    try {
+      console.log("ADMIN BLOG FETCH HIT"); // 👈 add
 
+      const blogs = await this.blogRepository.findAll();
+
+      res.status(200).json(blogs);
+    } catch (error) {
+      console.error("ADMIN FETCH ERROR:", error); // 👈 add
+      res.status(400).json({ error: error.message });
+    }
+  }
   async updateBlog(req, res) {
     try {
       const { blogId: id } = req.params;
-      const updateData = { ...req.body };
 
-      // If a new file is uploaded, update the image field with the filename string
-      if (req.file) {
-        updateData.image = req.file.filename;
-      }
+      // Only allow certain fields
+      const allowedFields = [
+        "title",
+        "content",
+        "category",
+        "status",
+        "author",
+        "tags",
+      ];
+      const updateData = {};
 
-      const updatedBlog = await this.blogRepository.update(id, updateData);
+      allowedFields.forEach((field) => {
+        if (req.body[field] !== undefined && req.body[field] !== "") {
+          updateData[field] = req.body[field];
+        }
+      });
+
+      if (req.file) updateData.image = req.file.filename;
+
+      // Use { new: true } to return updated document
+      const updatedBlog = await this.blogRepository.update(id, updateData, {
+        new: true,
+        runValidators: true,
+      });
+
       if (!updatedBlog)
         return res.status(404).json({ error: "Blog not found." });
 
@@ -134,14 +163,6 @@ class BlogController {
   // GET /get - Public list (only published blogs)
 
   // GET /get/admin - Admin list (all blogs)
-  async listBlogsAdmin(req, res) {
-    try {
-      const blogs = await this.blogRepository.findAll();
-      res.status(200).json(blogs);
-    } catch (error) {
-      res.status(400).json({ error: error.message });
-    }
-  }
 
   // DELETE /deleteComment/:blogId/:commentId
   async removeComment(req, res) {

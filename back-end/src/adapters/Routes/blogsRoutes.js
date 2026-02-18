@@ -32,17 +32,17 @@ router.delete(
     Middlware.adminOnlyMiddleware,
     (req, res) => blogController.deleteBlog(req, res)
 );
-
+router.get(
+  "/get/admin",
+  Middlware.authMiddleware,
+  Middlware.adminOnlyMiddleware,
+  (req, res) => blogController.listBlogsAdmin(req, res),
+);
 router.get('/get/:blogId', (req, res) => blogController.getBlog(req, res));
 
 router.get('/get', (req, res) => blogController.listBlogs(req, res));
 
-router.get(
-    '/get/admin',
-    Middlware.authMiddleware,
-    Middlware.adminOnlyMiddleware,
-    (req, res) => blogController.listBlogsAdmin(req, res)
-);
+
 
 
 router.post('/addComment/:blogId', (req, res) => blogController.addComment(req, res));
