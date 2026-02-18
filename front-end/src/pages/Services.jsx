@@ -69,17 +69,7 @@ const Services = () => {
           </div>
         )}
 
-        {/* 3-Card Row Grid */}
-        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 w-full">
-          {sampleServices.map((service, index) => (
-            <ServiceCard
-              key={index}
-              index={index}
-              title={service.title}
-              desc={service.desc}
-            />
-          ))}
-        </div> */}
+       
         {hexagons.map((hex) => (
           <div
             key={hex.id}

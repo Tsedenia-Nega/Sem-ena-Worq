@@ -1,123 +1,133 @@
-import { Link,useNavigate } from "react-router-dom";
-import React,{useState} from "react";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import { FaUser, FaLock } from "react-icons/fa";
-import logo from "./../assets/Logo.PNG"; 
+import logo from "./../assets/Logo.PNG";
 import Hexagons from "./../components/Hexagons";
 import api from "../api/axios";
+
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error,setError] = useState("");
-  const [loading,setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin =async(e)=>{
-    e.preventDefault();
+  const handleLogin = async (e) => {
+    e.preventDefault(); // This is crucial to stop the reload
     setLoading(true);
-    setError("");
-    try{
-      const response = await api.post("/login",{
-        email,
-        password
-      },{
-        withCredentials:true
-      });
-      if (response.data.token){localStorage.setItem("token",response.data.token);
-        localStorage.setItem("user",JSON.stringify(response.data.user));
+   
+    try {
+      const response = await api.post(
+        "/login",
+        {
+          email,
+          password,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
         navigate("/admin");
       }
-    }catch(err){
+    } catch (err) {
       setError("Invalid email or password. please try again.");
-      
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-black relative overflow-hidden">
-      <Link to="/" className="fixed top-5 left-9 z-50">
+    <div className="min-h-screen flex items-center justify-center bg-black relative overflow-hidden">
+      {/* Logo */}
+      <Link to="/" className="fixed top-8 left-8 z-50">
         <img
           src={logo}
           alt="Logo"
-          className="w-16 h-16 cursor-pointer hover:opacity-80 transition-opacity"
+          className="w-14 h-14 hover:scale-110 transition-transform"
         />
       </Link>
-      <Hexagons />
-      <div className="flex flex-col md:flex-row items-center w-full md:w-4/5 lg:w-3/4 xl:w-2/3 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
-        <div className="hidden md:block md:w-1/2"></div>
-        <div className="w-full md:w-1/2 bg-yellow-700 p-12 rounded-lg">
-          <h2 className="text-4xl font-bold text-white text-center mb-8">
-            Login
+
+      {/* Background - Z-index lowered to ensure it stays behind */}
+      <div className="absolute inset-0 z-0">
+        <Hexagons />
+      </div>
+
+      {/* Login Card Container - Fixed width to prevent jumping */}
+      <div className="relative z-10 w-full max-w-[450px] px-6">
+        <div className="bg-[#0c0c0c] border border-[#DD9735]/40 p-10 rounded-2xl shadow-[0_0_50px_rgba(221,151,53,0.1)] transition-all duration-500">
+          <h2 className="text-3xl font-bold text-white text-center mb-2 uppercase tracking-tighter">
+            Admin <span className="text-[#DD9735]">Login</span>
           </h2>
-          {error && (
-            <div className="bg-red-200 text-red-800 p-3 rounded-lg mb-6 text-center text-sm font-bold">
-              {error}
-            </div>
-          )}
-          <form onSubmit={handleLogin}>
-            <div className="mb-6">
-              <label
-                className="block text-white font-bold mb-2"
-                htmlFor="username"
-              >
+          <div className="w-10 h-[1px] bg-[#DD9735] mx-auto mb-10"></div>
+
+          {/* Error Message - Absolute height container to prevent layout shift */}
+          <div className="min-h-[50px]">
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/50 text-red-500 p-3 rounded-lg mb-6 text-center text-[10px] font-bold uppercase tracking-widest animate-pulse">
+                {error}
+              </div>
+            )}
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div>
+              <label className="block text-[#DD9735] text-[10px] font-bold uppercase tracking-[0.2em] mb-2">
                 Email Address
               </label>
-              <div className="relative">
+              <div className="relative group">
                 <input
-                  className="appearance-none border-none rounded-lg w-full py-3 px-4 text-black leading-tight focus:outline-none bg-yellow-600 peer"
-                  id="email"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:outline-none focus:border-[#DD9735] transition-all"
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (error) setError(""); // Clears error when user starts fixing it
+                  }}
                   required
                 />
-                <FaUser className="text-white mx-3 absolute right-0 top-1/2 transform -translate-y-1/2" />
+                <FaUser className="text-white/20 group-focus-within:text-[#DD9735] absolute right-4 top-1/2 -translate-y-1/2 transition-colors" />
               </div>
             </div>
-            <div className="mb-6">
-              <label
-                className="block text-white font-bold mb-2"
-                htmlFor="password"
-              >
+
+            <div>
+              <label className="block text-[#DD9735] text-[10px] font-bold uppercase tracking-[0.2em] mb-2">
                 Password
               </label>
-              <div className="relative">
+              <div className="relative group">
                 <input
-                  className="appearance-none border-none rounded-lg w-full py-3 px-4 text-black leading-tight focus:outline-none bg-yellow-600"
-                  id="password"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:outline-none focus:border-[#DD9735] transition-all"
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (error) setError(""); // Clears error when user starts fixing it
+                  }}
                   required
                 />
-                <FaLock className="text-white mx-3 absolute right-0 top-1/2 transform -translate-y-1/2" />
+                <FaLock className="text-white/20 group-focus-within:text-[#DD9735] absolute right-4 top-1/2 -translate-y-1/2 transition-colors" />
               </div>
             </div>
-            <div className="flex items-center justify-between mb-4">
+
+            <div className="flex justify-end">
               <Link
-                to="/forgot-password text-xs font-bold text-black hover:underline"
-                href="#"
+                to="/forgot-password"
+                size="sm"
+                className="text-[10px] text-white/30 hover:text-[#DD9735] uppercase font-bold tracking-widest transition-colors"
               >
-                Forgot password?
+                Forgot Password?
               </Link>
             </div>
-            <div className="flex items-center justify-center">
-              <button
-                className="bg-white hover:text-yellow-700 text-lg text-yellow-500 font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline w-full"
-                type="submit"
-              >
-                {loading ? "Verifying..." : "Login "}
-              </button>
-            </div>
-            <div className="mt-4 text-center">
-              {/* <a
-                className="text-l text-yellow-400 hover:text-yellow-300"
-                href="#"
-              >
-                Create Account
-              </a> */}
-            </div>
+
+            <button
+              className="w-full py-4 bg-[#DD9735] text-black font-black uppercase tracking-widest text-xs rounded-lg hover:bg-white transition-all active:scale-95 shadow-lg shadow-[#DD9735]/20"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? "Verifying..." : "Login"}
+            </button>
           </form>
         </div>
       </div>
