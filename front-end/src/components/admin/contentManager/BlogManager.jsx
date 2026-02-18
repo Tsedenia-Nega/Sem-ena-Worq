@@ -6,7 +6,6 @@ const BlogManager = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
   const [showModal, setShowModal] = useState(false);
   const [editingBlog, setEditingBlog] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -21,12 +20,11 @@ const BlogManager = () => {
     image: null,
   });
 
-  
   const fetchBlogs = async () => {
     try {
       setLoading(true);
       setError(null);
-      const res = await api.get("/blogs/get/admin"); // admin fetch
+      const res = await api.get("/blogs/get/admin");
       setBlogs(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error("Fetch error:", err);
@@ -36,85 +34,86 @@ const BlogManager = () => {
     }
   };
 
-
   useEffect(() => {
     fetchBlogs();
   }, []);
 
-  
   const handleEditClick = (blog) => {
     setEditingBlog(blog);
-
     setFormData({
       title: blog.title || "",
       content: blog.content || "",
-      category: blog.category || "",
+      category: blog.category || "", // Ensure category is mapped
       status: blog.status || "published",
       author: blog.author || "Admin",
       tags: blog.tags || "general",
-      image: null,
+      image: blog.image || null,
     });
-
-    // preview existing image
     setPreview(`${IMAGE_PATH}/${blog.image}`);
-
     setShowModal(true);
   };
 
-  
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData({ ...formData, image: file });
-      setPreview(URL.createObjectURL(file));
-    }
-  };
+ const handleFileChange = (e) => {
+   const file = e.target.files[0];
+   if (file) {
+     // We set the file directly into the state
+     setFormData((prev) => ({ ...prev, image: file }));
+     setPreview(URL.createObjectURL(file));
+   }
+ };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const data = new FormData();
+ const handleSubmit = async (e) => {
+   e.preventDefault();
 
-    // Append all fields
-    ["title", "content", "category", "status", "author", "tags"].forEach(
-      (field) => {
-        data.append(field, formData[field]);
-      },
-    );
+   // Validation check for NEW blogs
+   if (!editingBlog && !formData.image) {
+     alert("Please select an image for the new post");
+     return;
+   }
 
-    // Append image only if user selected a new file
-    if (formData.image instanceof File) {
-      data.append("image", formData.image);
-    }
+   const data = new FormData();
 
-    try {
-      if (editingBlog) {
-        await api.patch(`/blogs/edit/${editingBlog._id}`, data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+   // 1. Append all text fields
+   data.append("title", formData.title);
+   data.append("content", formData.content);
+   data.append("category", formData.category || "General");
+   data.append("status", formData.status);
+   data.append("author", formData.author);
+   data.append("tags", formData.tags);
 
-      } else {
-        if (!formData.image)
-          return alert("Please select an image for the new post");
-        await api.post("/blogs/create", data);
-      }
+   // 2. Append image only if it exists and is a File
+   if (formData.image instanceof File) {
+     data.append("image", formData.image);
+   }
 
-      resetModal();
-      fetchBlogs();
-    } catch (err) {
-      console.error("BACKEND ERROR:", err.response?.data);
-      alert(
-        `Error: ${err.response?.data?.error || "Check console for details"}`,
-      );
-    }
-  };
+   try {
+     if (editingBlog) {
+       await api.patch(`/blogs/edit/${editingBlog._id}`, data);
+     } else {
+       // We already checked if image exists above, so this will work now
+       await api.post("/blogs/create", data, {
+         headers: {
+           "Content-Type": "multipart/form-data",
+           Authorization: `Bearer ${token}`,
+         },
+       });
+     }
 
+     resetModal();
+     fetchBlogs();
+     alert(editingBlog ? "Blog updated!" : "Blog created!");
+   } catch (err) {
+     console.error("SUBMIT ERROR:", err.response?.data);
+     alert(
+       `Error: ${err.response?.data?.error || "Check all required fields"}`,
+     );
+   }
+ };
 
-  
   const resetModal = () => {
     setShowModal(false);
     setEditingBlog(null);
     setPreview(null);
-
     setFormData({
       title: "",
       content: "",
@@ -126,179 +125,194 @@ const BlogManager = () => {
     });
   };
 
-  // ✅ DELETE
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this blog?")) return;
-
+    if (!window.confirm("Are you sure you want to delete this post?")) return;
     try {
       await api.delete(`/blogs/delete/${id}`);
       fetchBlogs();
     } catch (err) {
-      alert("Delete failed");
+      alert(err.response?.data?.error || "Delete failed");
     }
   };
 
   return (
     <div className="space-y-6 p-4">
-      {/* HEADER */}
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white uppercase">
+        <h2 className="text-2xl font-bold text-white uppercase tracking-tighter">
           Blog Manager
         </h2>
-
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-[#DD9735] px-5 py-2.5 rounded-xl font-bold"
+          className="flex items-center gap-2 bg-[#DD9735] text-black px-5 py-2.5 rounded-xl font-bold hover:scale-105 transition-all"
         >
           <Plus size={18} /> New Post
         </button>
       </div>
 
-      {/* ERROR */}
       {error && (
-        <div className="bg-red-500/10 p-4 rounded-xl flex gap-2 text-red-400">
-          <AlertCircle size={18} />
-          {error}
+        <div className="bg-red-500/10 p-4 rounded-xl flex gap-2 text-red-400 items-center">
+          <AlertCircle size={18} /> {error}
         </div>
       )}
 
-      {/* TABLE */}
-      <div className="bg-[#0A0A0A] rounded-2xl overflow-hidden">
+      <div className="bg-[#0A0A0A] rounded-2xl border border-white/5 overflow-hidden shadow-xl">
         <table className="w-full text-left">
           <thead className="bg-white/5 border-b border-white/5">
-            <tr className="text-gray-400 text-xs uppercase tracking-widest">
+            <tr className="text-gray-400 text-[10px] uppercase tracking-[0.2em]">
               <th className="p-5">Article</th>
               <th className="p-5 text-center">Category</th>
               <th className="p-5 text-center">Status</th>
-              <th className="p-5 text-center">Author</th>
-              <th className="p-5 text-center">Tags</th>
               <th className="p-5 text-right">Actions</th>
             </tr>
           </thead>
-
           <tbody className="divide-y divide-white/5 text-sm">
-            {blogs.length > 0 ? (
-              blogs.map((blog) => (
-                <tr
-                  key={blog._id}
-                  className="hover:bg-white/[0.02] transition-colors"
-                >
-                  <td className="p-5 flex items-center gap-4">
-                    <img
-                      src={`${IMAGE_PATH}/${blog.image}`}
-                      className="w-12 h-12 object-cover rounded-lg border border-white/10"
-                      alt=""
-                      onError={(e) =>
-                        (e.target.src = "https://placehold.co/100")
-                      }
-                    />
-                    <div>
-                      <p className="text-white font-medium">{blog.title}</p>
-                    </div>
-                  </td>
-                  <td className="p-5 text-center">
-                    {blog.category || "Uncategorized"}
-                  </td>
-                  <td className="p-5 text-center">
-                    <span
-                      className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${
-                        blog.status === "published"
-                          ? "bg-green-500/10 text-green-400"
-                          : "bg-gray-500/10 text-gray-400"
-                      }`}
+            {blogs.map((blog) => (
+              <tr
+                key={blog._id}
+                className="hover:bg-white/[0.02] transition-colors"
+              >
+                <td className="p-5 flex items-center gap-4">
+                  <img
+                    src={`${IMAGE_PATH}/${blog.image}`}
+                    className="w-12 h-12 object-cover rounded-lg border border-white/10"
+                    alt=""
+                    onError={(e) => (e.target.src = "https://placehold.co/100")}
+                  />
+                  <span className="text-white font-medium">{blog.title}</span>
+                </td>
+                <td className="p-5 text-center text-gray-400">
+                  {blog.category || "Uncategorized"}
+                </td>
+                <td className="p-5 text-center">
+                  <span
+                    className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${blog.status === "published" ? "bg-green-500/10 text-green-400" : "bg-gray-500/10 text-gray-400"}`}
+                  >
+                    {blog.status}
+                  </span>
+                </td>
+                <td className="p-5 text-right">
+                  <div className="flex justify-end gap-3">
+                    <button
+                      onClick={() => handleEditClick(blog)}
+                      className="text-gray-400 hover:text-[#DD9735] transition-colors"
                     >
-                      {blog.status}
-                    </span>
-                  </td>
-                  <td className="p-5 text-center">{blog.author}</td>
-                  <td className="p-5 text-center">{blog.tags}</td>
-                  <td className="p-5 text-right">
-                    <div className="flex justify-end gap-3">
-                      <button
-                        onClick={() => handleEditClick(blog)}
-                        className="text-gray-400 hover:text-[#DD9735] transition-colors"
-                      >
-                        <Edit size={18} />
-                      </button>
-                      <button className="text-gray-400 hover:text-red-500 transition-colors">
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="6" className="p-10 text-center text-gray-500">
-                  No data found.
+                      <Edit size={18} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(blog._id)}
+                      className="text-gray-400 hover:text-red-500 transition-colors"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
                 </td>
               </tr>
-            )}
+            ))}
           </tbody>
         </table>
       </div>
 
-      {/* MODAL */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/90 flex items-center justify-center">
-          <div className="bg-[#0F0F0F] p-6 rounded-2xl w-full max-w-2xl">
-            <h3 className="text-[#DD9735] font-bold mb-4">
-              {editingBlog ? "Edit Blog" : "Create Blog"}
+        <div className="fixed inset-0 bg-black/95 flex items-center justify-center z-[100] p-4 backdrop-blur-sm">
+          <div className="bg-[#0F0F0F] border border-white/10 p-8 rounded-[2rem] w-full max-w-2xl shadow-2xl overflow-y-auto max-h-[90vh]">
+            <h3 className="text-[#DD9735] font-black uppercase tracking-widest text-xl mb-6">
+              {editingBlog ? "Edit Article" : "Create Article"}
             </h3>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <input
-                type="text"
-                placeholder="Title"
-                className="w-full p-3 bg-black/40 rounded-xl"
-                value={formData.title}
-                onChange={(e) =>
-                  setFormData({ ...formData, title: e.target.value })
-                }
-                required
-              />
-
-              <input
-                type="text"
-                placeholder="Category"
-                className="w-full p-3 bg-black/40 rounded-xl"
-                value={formData.category}
-                onChange={(e) =>
-                  setFormData({ ...formData, category: e.target.value })
-                }
-              />
-           
-              <textarea
-                rows="4"
-                placeholder="Content"
-                className="w-full p-3 bg-black/40 rounded-xl"
-                value={formData.content}
-                onChange={(e) =>
-                  setFormData({ ...formData, content: e.target.value })
-                }
-                required
-              />
-
-              {/* IMAGE */}
-              <input type="file" onChange={handleFileChange} />
-
-              {preview && (
-                <img
-                  src={preview}
-                  className="w-32 h-32 object-cover rounded-lg"
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="space-y-2">
+                <label className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+                  Title
+                </label>
+                <input
+                  type="text"
+                  className="w-full p-4 bg-black/40 border border-white/5 rounded-xl text-white outline-none focus:border-[#DD9735]"
+                  value={formData.title}
+                  onChange={(e) =>
+                    setFormData({ ...formData, title: e.target.value })
+                  }
+                  required
                 />
-              )}
+              </div>
 
-              <div className="flex justify-end gap-3 pt-4">
-                <button type="button" onClick={resetModal}>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+                    Category
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full p-4 bg-black/40 border border-white/5 rounded-xl text-white outline-none focus:border-[#DD9735]"
+                    value={formData.category}
+                    onChange={(e) =>
+                      setFormData({ ...formData, category: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+                    Status
+                  </label>
+                  <select
+                    className="w-full p-4 bg-black/40 border border-white/5 rounded-xl text-white outline-none focus:border-[#DD9735]"
+                    value={formData.status}
+                    onChange={(e) =>
+                      setFormData({ ...formData, status: e.target.value })
+                    }
+                  >
+                    <option value="published">Published</option>
+                    <option value="draft">Draft</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+                  Content
+                </label>
+                <textarea
+                  rows="4"
+                  className="w-full p-4 bg-black/40 border border-white/5 rounded-xl text-white outline-none focus:border-[#DD9735]"
+                  value={formData.content}
+                  onChange={(e) =>
+                    setFormData({ ...formData, content: e.target.value })
+                  }
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+                  Image
+                </label>
+                <div className="flex items-center gap-4">
+                  <input
+                    type="file"
+                    className="text-xs text-gray-500 file:bg-white/5 file:border-0 file:text-white file:px-4 file:py-2 file:rounded-lg file:mr-4"
+                    onChange={handleFileChange}
+                  />
+                  {preview && (
+                    <img
+                      src={preview}
+                      className="w-16 h-16 object-cover rounded-lg border border-white/10"
+                    />
+                  )}
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-4 pt-6">
+                <button
+                  type="button"
+                  onClick={resetModal}
+                  className="text-gray-500 font-bold uppercase text-xs tracking-widest hover:text-white transition-colors"
+                >
                   Cancel
                 </button>
-
                 <button
                   type="submit"
-                  className="bg-[#DD9735] px-6 py-2 rounded-xl"
+                  className="bg-[#DD9735] text-black px-10 py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-lg shadow-[#DD9735]/20"
                 >
-                  Save
+                  Save Article
                 </button>
               </div>
             </form>
