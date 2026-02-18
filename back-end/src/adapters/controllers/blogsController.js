@@ -11,9 +11,10 @@ class BlogController {
     try {
       const { title, content, author, tags, status, category } = req.body;
 
-      // Use the filename provided by Multer (DiskStorage)
+      // Multer gives you req.file
       const image = req.file ? req.file.filename : null;
 
+      // Image is required only when creating a new blog
       if (!image) {
         return res.status(400).json({ error: "Image is required." });
       }
@@ -22,7 +23,7 @@ class BlogController {
         title,
         content,
         author,
-        tags,
+        tags: tags ? tags.split(",") : [], // in case you send comma separated string
         status,
         category,
         image,
@@ -36,6 +37,7 @@ class BlogController {
       res.status(400).json({ error: error.message });
     }
   }
+
   async listBlogsAdmin(req, res) {
     try {
       console.log("ADMIN BLOG FETCH HIT"); // 👈 add
@@ -51,32 +53,16 @@ class BlogController {
   async updateBlog(req, res) {
     try {
       const { blogId: id } = req.params;
+      const updateData = { ...req.body };
 
-      // Only allow certain fields
-      const allowedFields = [
-        "title",
-        "content",
-        "category",
-        "status",
-        "author",
-        "tags",
-      ];
-      const updateData = {};
-
-      allowedFields.forEach((field) => {
-        if (req.body[field] !== undefined && req.body[field] !== "") {
-          updateData[field] = req.body[field];
-        }
-      });
-
+      // Only update image if a new file was uploaded
       if (req.file) updateData.image = req.file.filename;
 
-      // Use { new: true } to return updated document
-      const updatedBlog = await this.blogRepository.update(id, updateData, {
-        new: true,
-        runValidators: true,
-      });
+      // Run entity validation on update
+      const blogEntity = new BlogEntity(updateData);
+      blogEntity.validateOnUpdate();
 
+      const updatedBlog = await this.blogRepository.update(id, updateData);
       if (!updatedBlog)
         return res.status(404).json({ error: "Blog not found." });
 
