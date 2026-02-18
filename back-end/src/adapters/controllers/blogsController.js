@@ -1,84 +1,67 @@
 import mongoose from 'mongoose';
  import sharp from "sharp";
+ import path from "path";
 import BlogEntity from '../../Domain/blogEntity.js';
 class BlogController {
   constructor(blogRepository) {
     this.blogRepository = blogRepository;
   }
 
- 
+  async createBlog(req, res) {
+    try {
+      const { title, content, author, tags, status, category } = req.body;
 
-// Inside your BlogController class
-async createBlog(req, res) {
-  try {
-    const { title, content, author, tags, status } = req.body;
-    
-    let image = null;
-    if (req.file) {
-      // OPTIMIZE: Resize and convert to WebP for speed
-      image = await sharp(req.file.buffer)
-        .resize(1200) // Slightly larger for blog headers
-        .webp({ quality: 80 })
-        .toBuffer();
+      // Use the filename provided by Multer (DiskStorage)
+      const image = req.file ? req.file.filename : null;
+
+      if (!image) {
+        return res.status(400).json({ error: "Image is required." });
+      }
+
+      const blogEntity = new BlogEntity({
+        title,
+        content,
+        author,
+        tags,
+        status,
+        category,
+        image,
+      });
+
+      blogEntity.validate();
+
+      const blog = await this.blogRepository.create(blogEntity);
+      res.status(201).json(blog);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
     }
-
-    const blogEntity = new BlogEntity({
-      title, content, author, tags, status, image
-    });
-
-    blogEntity.validate();
-    const blog = await this.blogRepository.create(blogEntity);
-    res.status(201).json(blog);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
   }
-}
-
-// Add this helper to the class to use in your list/get methods
-convertImageToBase64(imageBuffer) {
-  if (imageBuffer && imageBuffer.data) {
-    const buffer = Buffer.isBuffer(imageBuffer) ? imageBuffer : Buffer.from(imageBuffer.data);
-    return `data:image/webp;base64,${buffer.toString("base64")}`;
-  }
-  return null;
-}
-
-async listBlogs(req, res) {
-  try {
-    const blogs = await this.blogRepository.findAll({ status: "published" });
-    
-    // Format blogs to include the Base64 string
-    const formattedBlogs = blogs.map(blog => ({
-      ...blog._doc,
-      image: this.convertImageToBase64(blog.image)
-    }));
-    
-    res.status(200).json(formattedBlogs);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-}
 
   async updateBlog(req, res) {
     try {
       const { blogId: id } = req.params;
-      if (!mongoose.isValidObjectId(id)) {
-        return res.status(400).json({ error: "Invalid blog ID." });
+      const updateData = { ...req.body };
+
+      // If a new file is uploaded, update the image field with the filename string
+      if (req.file) {
+        updateData.image = req.file.filename;
       }
 
-      const { title, content, author, tags, status } = req.body;
-      const image = req.file ? req.file.buffer : undefined;
-
-      const existingBlog = await this.blogRepository.findById(id);
-      if (!existingBlog) {
+      const updatedBlog = await this.blogRepository.update(id, updateData);
+      if (!updatedBlog)
         return res.status(404).json({ error: "Blog not found." });
-      }
 
-      const updatedData = { title, content, author, tags, status };
-      if (image) updatedData.image = image;
-
-      const updatedBlog = await this.blogRepository.update(id, updatedData);
       res.status(200).json(updatedBlog);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+  // listBlogs remains the same, just returning the data as is
+  async listBlogs(req, res) {
+    try {
+      const blogs = await this.blogRepository.findAll({ status: "published" });
+      res.status(200).json(blogs);
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -149,7 +132,6 @@ async listBlogs(req, res) {
   // ... (create, update, get, delete are already done)
 
   // GET /get - Public list (only published blogs)
- 
 
   // GET /get/admin - Admin list (all blogs)
   async listBlogsAdmin(req, res) {

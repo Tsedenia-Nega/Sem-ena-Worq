@@ -13,7 +13,7 @@ const router = express.Router();
 
 
 router.post('/create',Middlware.authMiddleware, Middlware.adminOnlyMiddleware,upload.single("image"), (req, res) => controller.createTestimonial(req, res)); 
-router.get('/get',Middlware.authMiddleware, Middlware.adminOnlyMiddleware, (req, res) => controller.listTestimonials(req, res));  
+router.get('/get', (req, res) => controller.listTestimonials(req, res));  
 router.get("/get/:id", (req, res) =>
     controller.getTestimonialById(req, res)
 );
