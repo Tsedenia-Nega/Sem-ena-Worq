@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Diamond } from "lucide-react";
-import { IMAGE_PATH } from "../api/axios"; // 1. Import your central path
+import { IMAGE_PATH } from "../api/axios";
 
 const ServiceCard = ({ title, desc, index, image }) => {
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
@@ -12,8 +12,8 @@ const ServiceCard = ({ title, desc, index, image }) => {
     const y = e.clientY - card.top;
     const centerX = card.width / 2;
     const centerY = card.height / 2;
-    const rotateX = (y - centerY) / 15;
-    const rotateY = (centerX - x) / 15;
+    const rotateX = (y - centerY) / 25;
+    const rotateY = (centerX - x) / 25;
     setRotate({ x: rotateX, y: rotateY });
   };
 
@@ -22,63 +22,63 @@ const ServiceCard = ({ title, desc, index, image }) => {
       onMouseMove={onMouseMove}
       onMouseLeave={() => setRotate({ x: 0, y: 0 })}
       animate={{ rotateX: rotate.x, rotateY: rotate.y }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      className="relative h-[420px] w-full rounded-[32px] cursor-pointer perspective-1000 group"
+      transition={{ type: "spring", stiffness: 200, damping: 25 }}
+      className="relative h-[380px] w-full rounded-[24px] cursor-pointer perspective-1000 group"
     >
-      <div className="relative h-full w-full overflow-hidden rounded-[32px] bg-[#0A0A0A] border border-[#DD9735]/40 transition-all duration-500 group-hover:border-[#DD9735] shadow-[0_0_40px_rgba(221,151,53,0.15)] group-hover:shadow-[0_0_50px_rgba(221,151,53,0.3)]">
-        {/* 2. Updated Image Source Logic */}
+      {/* Main Container with constant subtle glow */}
+      <div className="relative h-full w-full overflow-hidden rounded-[24px] bg-[#050505] border border-[#DD9735]/20 transition-all duration-500 group-hover:border-[#DD9735]/60 shadow-[0_0_30px_rgba(0,0,0,0.5)] group-hover:shadow-[0_0_40px_rgba(221,151,53,0.1)]">
+        {/* IMAGE BACKGROUND */}
         {image && (
           <div className="absolute inset-0 z-0">
             <img
-              // Construct URL: http://localhost:5000/uploads/filename.jpg
               src={`${IMAGE_PATH}/${image}`}
               alt={title}
-              loading="lazy"
-              crossOrigin="anonymous" // Fixes the Opaque blocking error
-              className="w-full h-full object-cover opacity-50 transition-transform duration-1000 group-hover:scale-110"
-              onError={(e) => {
-                e.target.src =
-                  "https://placehold.co/600x400/0a0a0a/DD9735?text=Service";
-              }}
+              className="w-full h-full object-cover opacity-40 grayscale-[0.3] transition-all duration-700 group-hover:scale-110 group-hover:grayscale-0 group-hover:opacity-60"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-[#DD9735]/5 to-black/90" />
+            {/* Dark Overlay for Text Pop */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/90" />
           </div>
         )}
 
-        {/* TOP LAYER: Gold Diamond & Ghost Number */}
-        <div className="absolute top-0 left-0 right-0 p-8 flex justify-between items-start z-20">
-          <div className="p-3 rounded-xl bg-[#DD9735] border border-[#DD9735] transition-transform duration-500 group-hover:scale-110 shadow-[0_0_15px_rgba(221,151,53,0.5)]">
-            <Diamond className="text-black" size={22} />
+        {/* TOP CONTENT: Icon & Index */}
+        <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-20">
+          <div className="w-10 h-10 rounded-lg bg-[#DD9735]/10 backdrop-blur-md border border-[#DD9735]/30 flex items-center justify-center group-hover:bg-[#DD9735] transition-all duration-500 shadow-[0_0_15px_rgba(221,151,53,0.2)]">
+            <Diamond
+              className="text-[#DD9735] group-hover:text-black transition-colors"
+              size={18}
+            />
           </div>
-          <span className="text-[#DD9735]/10 font-bold text-6xl select-none group-hover:text-[#DD9735]/20 transition-colors">
+          <span className="text-[#DD9735]/10 font-black text-5xl select-none group-hover:text-[#DD9735]/20 transition-colors duration-500 italic">
             0{index + 1}
           </span>
         </div>
 
-        {/* MIDDLE LAYER: Centered Text */}
-        <div className="relative z-10 h-full p-10 flex flex-col items-center justify-center text-center">
-          <h3 className="text-[#DD9735] text-2xl font-bold uppercase tracking-[0.25em] mb-4 drop-shadow-[0_0_10px_rgba(221,151,53,0.3)]">
+        {/* MAIN CONTENT: Centered & Lifted Position */}
+        <div className="relative z-10 h-full p-8 flex flex-col justify-center items-center text-center -mt-4">
+          <h3 className="text-white text-xl md:text-2xl font-bold uppercase tracking-[0.2em] mb-4 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] group-hover:text-[#DD9735] transition-colors duration-300">
             {title}
           </h3>
 
-          <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-[#DD9735] to-transparent mb-6 group-hover:w-40 transition-all duration-700" />
+          <div className="w-16 h-[2px] bg-gradient-to-r from-transparent via-[#DD9735] to-transparent mb-6 group-hover:w-32 transition-all duration-700" />
 
-          <p className="text-gray-200 text-sm md:text-base leading-relaxed tracking-wide transition-colors line-clamp-3 max-w-[300px]">
+          <p className="text-gray-300 text-sm md:text-base leading-relaxed tracking-wide transition-colors line-clamp-3 max-w-[280px] drop-shadow-md">
             {desc}
           </p>
         </div>
 
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(221,151,53,0.15),_transparent_70%)]" />
+        {/* Constant Radial Glow in the background */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(221,151,53,0.08),_transparent_70%)]" />
 
+        {/* Animated Light Sweep */}
         <motion.div
           animate={{ x: ["-200%", "200%"] }}
           transition={{
-            duration: 4,
+            duration: 6,
             repeat: Infinity,
             ease: "linear",
-            repeatDelay: 2,
+            repeatDelay: 4,
           }}
-          className="absolute inset-0 z-5 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12"
+          className="absolute inset-0 z-5 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12 pointer-events-none"
         />
       </div>
     </motion.div>
