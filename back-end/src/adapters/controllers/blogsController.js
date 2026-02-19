@@ -8,71 +8,84 @@ class BlogController {
   }
 
   async createBlog(req, res) {
+    console.log("RECEIVED BODY:", req.body); // Check your terminal for this!
+    console.log("RECEIVED FILE:", req.file);
+
     try {
       const { title, content, author, tags, status, category } = req.body;
-
-      // Multer gives you req.file
       const image = req.file ? req.file.filename : null;
 
-      // Image is required only when creating a new blog
       if (!image) {
-        return res.status(400).json({ error: "Image is required." });
+        return res
+          .status(400)
+          .json({ error: "Image file is missing from the request." });
       }
 
       const blogEntity = new BlogEntity({
-        title,
-        content,
-        author,
-        tags: tags ? tags.split(",") : [], // in case you send comma separated string
-        status,
-        category,
+        title: title || "Untitled",
+        content: content || "",
+        author: author || "Admin",
+        // Safety: Handle tags even if it's missing or not a string
+        tags:
+          typeof tags === "string" && tags.length > 0 ? tags.split(",") : [],
+        status: status || "published",
+        category: category || "General",
         image,
       });
-
-      blogEntity.validate();
 
       const blog = await this.blogRepository.create(blogEntity);
       res.status(201).json(blog);
     } catch (error) {
+      console.error("BACKEND CRASH:", error);
       res.status(400).json({ error: error.message });
     }
   }
 
   async listBlogsAdmin(req, res) {
     try {
-      console.log("ADMIN BLOG FETCH HIT"); // 👈 add
-
       const blogs = await this.blogRepository.findAll();
 
       res.status(200).json(blogs);
     } catch (error) {
-      console.error("ADMIN FETCH ERROR:", error); // 👈 add
       res.status(400).json({ error: error.message });
     }
   }
   async updateBlog(req, res) {
     try {
       const { blogId: id } = req.params;
+
+      // 1. Create a clean update object from the body
       const updateData = { ...req.body };
 
-      // Only update image if a new file was uploaded
-      if (req.file) updateData.image = req.file.filename;
+      // 2. CRITICAL: If no new file was uploaded,
+      // REMOVE the image key entirely so it doesn't overwrite with "{}"
+      if (req.file) {
+        updateData.image = req.file.filename;
+      } else {
+        delete updateData.image; // This prevents the Mongoose Cast Error
+      }
 
-      // Run entity validation on update
+      // 3. Handle tags if they are being sent as a string
+      if (updateData.tags && typeof updateData.tags === "string") {
+        updateData.tags = updateData.tags.split(",").map((t) => t.trim());
+      }
+
+      // 4. Validate using your entity
       const blogEntity = new BlogEntity(updateData);
       blogEntity.validateOnUpdate();
 
+      
       const updatedBlog = await this.blogRepository.update(id, updateData);
+
       if (!updatedBlog)
         return res.status(404).json({ error: "Blog not found." });
 
       res.status(200).json(updatedBlog);
     } catch (error) {
+      console.error("UPDATE ERROR:", error);
       res.status(400).json({ error: error.message });
     }
   }
-
-  // listBlogs remains the same, just returning the data as is
   async listBlogs(req, res) {
     try {
       const blogs = await this.blogRepository.findAll({ status: "published" });

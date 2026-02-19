@@ -16,7 +16,7 @@ const BlogManager = () => {
     category: "",
     status: "published",
     author: "Admin",
-    tags: "general",
+    tags: "",
     image: null,
   });
 
@@ -43,72 +43,66 @@ const BlogManager = () => {
     setFormData({
       title: blog.title || "",
       content: blog.content || "",
-      category: blog.category || "", // Ensure category is mapped
+      category: blog.category || "",
       status: blog.status || "published",
       author: blog.author || "Admin",
       tags: blog.tags || "general",
-      image: blog.image || null,
+      image: null, // Keep this null during edit unless a new file is picked
     });
     setPreview(`${IMAGE_PATH}/${blog.image}`);
     setShowModal(true);
   };
 
- const handleFileChange = (e) => {
-   const file = e.target.files[0];
-   if (file) {
-     // We set the file directly into the state
-     setFormData((prev) => ({ ...prev, image: file }));
-     setPreview(URL.createObjectURL(file));
-   }
- };
+  const handleFileChange = (e) => {
+    const file = e.target.files[0]; // Get the actual file
+    if (file) {
+      setFormData((prev) => ({ ...prev, image: file })); // Store it in state
+      setPreview(URL.createObjectURL(file)); // For UI preview
+    }
+  };
 
- const handleSubmit = async (e) => {
-   e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-   // Validation check for NEW blogs
-   if (!editingBlog && !formData.image) {
-     alert("Please select an image for the new post");
-     return;
-   }
+  if (!editingBlog && !formData.image) {
+    alert("Please select an image");
+    return;
+  }
 
-   const data = new FormData();
+  const data = new FormData();
+  data.append("title", formData.title);
+  data.append("content", formData.content);
+  data.append("category", formData.category);
+  data.append("status", formData.status);
+  data.append("author", formData.author);
+  data.append("tags", formData.tags);
 
-   // 1. Append all text fields
-   data.append("title", formData.title);
-   data.append("content", formData.content);
-   data.append("category", formData.category || "General");
-   data.append("status", formData.status);
-   data.append("author", formData.author);
-   data.append("tags", formData.tags);
+  if (formData.image instanceof File) {
+    data.append("image", formData.image);
+  }
 
-   // 2. Append image only if it exists and is a File
-   if (formData.image instanceof File) {
-     data.append("image", formData.image);
-   }
+  try {
+    const config = {
+      headers: {
+       
+        "Content-Type": "multipart/form-data",
+      },
+    };
 
-   try {
-     if (editingBlog) {
-       await api.patch(`/blogs/edit/${editingBlog._id}`, data);
-     } else {
-       // We already checked if image exists above, so this will work now
-       await api.post("/blogs/create", data, {
-         headers: {
-           "Content-Type": "multipart/form-data",
-           Authorization: `Bearer ${token}`,
-         },
-       });
-     }
+    if (editingBlog) {
+      await api.patch(`/blogs/edit/${editingBlog._id}`, data, config);
+    } else {
+      await api.post("/blogs/create", data, config);
+    }
 
-     resetModal();
-     fetchBlogs();
-     alert(editingBlog ? "Blog updated!" : "Blog created!");
-   } catch (err) {
-     console.error("SUBMIT ERROR:", err.response?.data);
-     alert(
-       `Error: ${err.response?.data?.error || "Check all required fields"}`,
-     );
-   }
- };
+    resetModal();
+    fetchBlogs();
+    alert("Success!");
+  } catch (err) {
+    console.error("SUBMIT ERROR:", err.response?.data);
+    alert(err.response?.data?.error || "Error");
+  }
+};
 
   const resetModal = () => {
     setShowModal(false);
@@ -265,7 +259,20 @@ const BlogManager = () => {
                   </select>
                 </div>
               </div>
-
+              <div className="space-y-2">
+                <label className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+                  Tags (comma separated)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. tech, health, news"
+                  className="w-full p-4 bg-black/40 border border-white/5 rounded-xl text-white outline-none focus:border-[#DD9735]"
+                  value={formData.tags}
+                  onChange={(e) =>
+                    setFormData({ ...formData, tags: e.target.value })
+                  }
+                />
+              </div>
               <div className="space-y-2">
                 <label className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
                   Content

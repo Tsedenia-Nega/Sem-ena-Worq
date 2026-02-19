@@ -12,12 +12,11 @@ const Middlware = new authMiddleware(blogRepository);
 
 router.post(
   "/create",
-  upload.single("image"), // Multer first
-  Middlware.authMiddleware,
-  Middlware.adminOnlyMiddleware,
-  (req, res) => blogController.createBlog(req, res),
+  upload.single("image"),        // 1. Multer FIRST (to catch the file)
+  Middlware.authMiddleware,      // 2. Auth SECOND
+  Middlware.adminOnlyMiddleware, // 3. Admin THIRD
+  (req, res) => blogController.createBlog(req, res)
 );
-
 
 router.patch(
     '/edit/:blogId',

@@ -3,6 +3,7 @@ class BlogEntity {
     title,
     content,
     author,
+    category,
     image,
     tags = [],
     status,
@@ -12,6 +13,7 @@ class BlogEntity {
   }) {
     this.title = title;
     this.content = content;
+    this.category = category;
     this.author = author;
     this.image = image;
     this.tags = tags;
@@ -58,7 +60,7 @@ class BlogEntity {
       );
     }
 
-    // ✅ New: validate category
+    
     if (this.category && this.category.trim().length === 0) {
       throw new Error("Category cannot be empty if provided.");
     }
