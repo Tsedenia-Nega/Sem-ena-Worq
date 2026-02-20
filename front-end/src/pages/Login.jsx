@@ -5,7 +5,7 @@ import logo from "./../assets/Logo.PNG";
 import Hexagons from "./../components/Hexagons";
 import api from "../api/axios";
 
-function LoginPage() {
+function LoginPage({setUser}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -30,6 +30,7 @@ function LoginPage() {
       if (response.data.token) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
+        setUser(response.data.user);
         navigate("/admin");
       }
     } catch (err) {

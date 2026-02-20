@@ -38,6 +38,8 @@ router.post("/reset-password", (req, res) =>
   controller.resetPassword(req, res),
 );
 router.post("/refresh-token", (req, res) => controller.refreshToken(req, res));
+// Authentication Routes
+router.get("/me", Middlware.authMiddleware, (req, res) => controller.getMe(req, res));
 
 // Admin Management
 router.get(
