@@ -12,6 +12,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminLayout from "./components/admin/AdminLayout";
 import ServicesManager from "./components/admin/contentManager/ServicesManager";
 import BlogManager from "./components/admin/contentManager/BlogManager";
+import PortfolioManager from "./components/admin/contentManager/PortfolioManager";
+import TestimonialManager from "./components/admin/contentManager/TestimonialManager";
 const MainLayout = () => (
   <>
     <Navbar />
@@ -39,11 +41,11 @@ function App() {
 
           <Route path="/admin" element={<AdminLayout />}>
             {/* <Route index element={<AdminDashboard />} />  */}
-            {/* <Route path="home" element={<HomeManager />} />  */}
-            <Route path="services" element={<ServicesManager />} />{" "}
+            <Route path="portfolios" element={<PortfolioManager />} />
+            <Route path="services" element={<ServicesManager />} />
+            <Route path="testimonials" element={<TestimonialManager />} />
             {/* /admin/services */}
-            <Route path="blog" element={<BlogManager />} /> 
-            
+            <Route path="blog" element={<BlogManager />} />
           </Route>
 
           {/* CATCH-ALL 404 */}

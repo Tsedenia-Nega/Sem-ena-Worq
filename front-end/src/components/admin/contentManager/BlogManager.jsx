@@ -132,9 +132,7 @@ const handleSubmit = async (e) => {
   return (
     <div className="space-y-6 p-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white uppercase tracking-tighter">
-          Blog Manager
-        </h2>
+        
         <button
           onClick={() => setShowModal(true)}
           className="flex items-center gap-2 bg-[#DD9735] text-black px-5 py-2.5 rounded-xl font-bold hover:scale-105 transition-all"
