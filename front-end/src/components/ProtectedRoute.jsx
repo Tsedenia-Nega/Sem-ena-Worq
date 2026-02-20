@@ -9,7 +9,7 @@ const ProtectedRoute = () => {
 
   // If check is done and no user, redirect
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return <Outlet />;

@@ -29,29 +29,52 @@ class ContactController {
 
     async getContacts(req, res) {
         try {
-            const { page = 1, limit = 10, sortBy = 'createdAt', sortingOrder = 'desc' } = req.query;
+          const {
+            page = 1,
+            limit = 10,
+            sortBy = "createdAt",
+            sortingOrder = "desc",
+          } = req.query;
 
-            const validatedPage = Math.max(1, parseInt(page));
-            const validatedLimit = Math.min(50, Math.max(1, parseInt(limit)));
-            const validatedSortingOrder = sortingOrder === 'asc' ? 1 : -1;
+          const validatedPage = Math.max(1, parseInt(page));
+          const validatedLimit = Math.min(50, Math.max(1, parseInt(limit)));
+          const validatedSortingOrder = sortingOrder === "asc" ? 1 : -1;
 
-            const { contacts, totalItems } = await this.contactRepository.getContactsUs({
-                page: validatedPage,
-                limit: validatedLimit,
-                sortingOrder: validatedSortingOrder,
+          // Inside your ContactController.getContacts method:
+
+          // CHANGE THIS:
+          // const { contacts, totalItems } = await this.contactRepository.getContactsUs(...)
+
+          // TO THIS (Destructure 'messages' then rename it to 'contacts' for the response):
+          const { messages, totalItems } =
+            await this.contactRepository.getContactsUs({
+              page: validatedPage,
+              limit: validatedLimit,
+              sortingOrder: validatedSortingOrder,
             });
 
-            const totalPages = Math.ceil(totalItems / validatedLimit);
+          // Now 'messages' contains your array, so send it in the JSON:
+          res.status(200).json({
+            pagination: {
+              currentPage: validatedPage,
+              totalPages: Math.ceil(totalItems / validatedLimit),
+              totalItems,
+              limit: validatedLimit,
+            },
+            data: messages, // Send the messages array here
+          });
 
-            res.status(200).json({
-                pagination: {
-                    currentPage: validatedPage,
-                    totalPages,
-                    totalItems,
-                    limit: validatedLimit,
-                },
-                data: contacts,
-            });
+        //   const totalPages = Math.ceil(totalItems / validatedLimit);
+
+        //   res.status(200).json({
+        //     pagination: {
+        //       currentPage: validatedPage,
+        //       totalPages,
+        //       totalItems,
+        //       limit: validatedLimit,
+        //     },
+        //     data: contacts,
+        //   });
         } catch (error) {
             console.error('Error in getContacts:', error);
             res.status(500).json({ message: `Error: ${error.message}` });
@@ -60,13 +83,13 @@ class ContactController {
 
     async deleteContact(req, res) {
         try {
-            const { messageId } = req.params;
+            const { id } = req.params;
 
-            if (!mongoose.Types.ObjectId.isValid(messageId)) {
+            if (!mongoose.Types.ObjectId.isValid(id)) {
                 return res.status(400).json({ message: 'Invalid message ID' });
             }
 
-            const objectId = new mongoose.Types.ObjectId(messageId);
+            const objectId = new mongoose.Types.ObjectId(id);
             const deletedMessage = await this.contactRepository.deleteContactUs(objectId);
 
             if (!deletedMessage) {

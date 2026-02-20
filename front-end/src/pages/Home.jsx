@@ -50,13 +50,13 @@ const Home = () => {
 
         <div className="relative z-10 text-center max-w-5xl px-6">
           {/* PRE-TITLE - Centered */}
-          <p className="text-[#DD9735] font-mono text-[10px] uppercase tracking-[0.8em] mb-4">
+          <p className="text-[#DD9735] font-mono text-[10px] uppercase tracking-[0.6em] mb-4">
             Digital Architecture // Est. 2026
           </p>
 
           {/* MAIN TITLE - Centered */}
           <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-10 uppercase">
-            SEM ENA <span className="text-[#DD9735]">WORQ</span>
+            SEM ENA <span className="bg-gradient-to-r from-[#DD9735] to-[#f9d423] bg-clip-text text-transparent">WORQ</span>
           </h1>
 
           {/* DESCRIPTION - Shifted to the right using ml-auto and text-left */}

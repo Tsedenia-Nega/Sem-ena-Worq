@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+/* 1. Standard Light Mode */
+html, body {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  transition: background-color 300ms, color 300ms;
+}
+
+/* 2. Standard Dark Mode - Forces changes when .dark is present */
+html.dark, 
+html.dark body {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  color-scheme: dark;
+}
+
+/* 3. Fix the Navbar specifically */
+html.dark header, 
+html.dark nav {
+  background-color: #000000 !important;
+  border-color: #1f2937 !important;
+}
+
+/* 4. Fix Nav Links color in Dark Mode */
+html.dark a {
+  color: #d1d5db;
+}
+
+html.dark a.active {
+  color: #DD9735;
+}

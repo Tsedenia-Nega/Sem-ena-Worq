@@ -7,10 +7,9 @@ const AdminHeader = () => {
 
   return (
     <div className="flex justify-between items-center mb-10">
-      <h1 className="text-3xl font-bold text-white tracking-tight capitalize">
+      <h1 className="text-3xl font-bold text-[#DD9735] tracking-tight capitalize">
         Manage {currentTab.replace("-", " ")}
       </h1>
-     
     </div>
   );
 };

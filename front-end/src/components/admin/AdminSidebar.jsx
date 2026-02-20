@@ -30,7 +30,7 @@ const AdminSidebar = ({ setUser }) => {
       if (setUser) {
         setUser(null);
       }
-      navigate("/login");
+      navigate("/");
     }
   };
 
@@ -64,8 +64,10 @@ const AdminSidebar = ({ setUser }) => {
       
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = location.pathname === item.path;
-
+          // const isActive = location.pathname === item.path;
+const isActive =
+  location.pathname === item.path ||
+  (location.pathname === "/admin" && item.path === "/admin/home");
           return (
             <Link
               key={item.name}

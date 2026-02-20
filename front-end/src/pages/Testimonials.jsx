@@ -34,7 +34,7 @@ const Testimonials = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-4xl md:text-6xl font-black tracking-tighter uppercase text-white italic"
+          className="text-3xl md:text-5xl font-black  uppercase text-white italic"
         >
           Voices of{" "}
           <span className="text-[#DD9735] drop-shadow-[0_0_15px_rgba(221,151,53,0.6)]">

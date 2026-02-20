@@ -36,7 +36,7 @@ const Portfolio = () => {
 
   return (
     <div className="relative w-full bg-[#0d0d0d] flex flex-col items-center py-5 px-4 font-itim">
-      <h1 className="text-white text-5xl font-bold mb-6 tracking-tight">
+      <h1 className="bg-gradient-to-r from-[#DD9735] to-[#f9d423] bg-clip-text text-transparent text-4xl font-bold mb-6 tracking-tight">
         Portfolio
       </h1>
 

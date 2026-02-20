@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route,Outlet } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route,Outlet,Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Blog from "./pages/Blog";
 import Navbar from "./components/Navbar"; 
@@ -19,6 +19,7 @@ import TestimonialManager from "./components/admin/contentManager/TestimonialMan
 import Profile from "./components/admin/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./contexts/AuthContext"; // Import the hook
+import HomeManager from "./components/admin/contentManager/HomeManager";
 const MainLayout = () => (
   <>
     <Navbar />
@@ -39,30 +40,32 @@ function App() {
     <ThemeProvider>
       <Router>
         <Routes>
-          {/* PUBLIC USER FACING ROUTES */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/service" element={<Services />} />
             <Route path="/portfolio" element={<Portfolio />} />
-            {/* <Route path="/testimonials" element={<Testimonials />} /> */}
+
             <Route path="/contact" element={<Contact />} />
           </Route>
 
-          {/* LOGIN PAGE (No Navbar) */}
-          <Route path="/login" element={<Login setUser={setUser} />} />
+          <Route
+            path="/management-portal-xyz/login"
+            element={<Login setUser={setUser} />}
+          />
 
           <Route element={<ProtectedRoute user={user} />}>
             <Route path="/admin" element={<AdminLayout setUser={setUser} />}>
+              <Route index element={<Navigate to="/admin/home" replace />} />
               <Route path="portfolios" element={<PortfolioManager />} />
               <Route path="services" element={<ServicesManager />} />
               <Route path="testimonials" element={<TestimonialManager />} />
+              <Route path="home" element={<HomeManager />} />
               <Route path="profile" element={<Profile />} />
               <Route path="blog" element={<BlogManager />} />
             </Route>
           </Route>
 
-          {/* CATCH-ALL 404 */}
           <Route path="*" element={<div>404 Page Not Found</div>} />
         </Routes>
       </Router>

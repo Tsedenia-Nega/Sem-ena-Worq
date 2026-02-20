@@ -17,7 +17,7 @@ class TokenHelper {
     payload.sessionId = uuidv4();
 
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "15m",
+      expiresIn: "25m",
       algorithm: "HS256",
     });
 

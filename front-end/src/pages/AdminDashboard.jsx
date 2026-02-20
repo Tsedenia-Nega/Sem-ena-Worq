@@ -6,8 +6,7 @@ const AdminDashboard = () => {
     <AdminLayout activeTab="dashboard">
       {(activeTab) => (
         <div className="text-gray-400">
-          {/* Your dynamic content per tab goes here */}
-          {/* Content for {activeTab} */}
+        
         </div>
       )}
     </AdminLayout>

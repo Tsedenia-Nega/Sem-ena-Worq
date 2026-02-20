@@ -9,7 +9,7 @@ const AdminLayout = ({ setUser }) => {
         <AdminSidebar setUser={setUser} />
         <main className="flex-1 p-10 overflow-y-auto">
           <AdminHeader />
-          {/* The Manager components (Services, etc.) render here */}
+         
           <Outlet />
         </main>
       </div>

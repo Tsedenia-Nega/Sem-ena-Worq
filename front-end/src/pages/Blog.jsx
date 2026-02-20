@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from "react";
-import api, { IMAGE_PATH } from "../api/axios"; // 1. Import IMAGE_PATH
+import api, { IMAGE_PATH } from "../api/axios";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, User, ArrowRight, ChevronLeft } from "lucide-react";
-import image from "./../assets/image.jpg";
+import { ArrowRight, ChevronLeft, User, Calendar } from "lucide-react";
+
 const Blog = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState("All Articles");
   const [selectedArticle, setSelectedArticle] = useState(null);
-  const hexagons = [
-    { id: 1, top: "-15%", left: "48%", rotation: "90deg" },
-    { id: 2, top: "30%", left: "58%", rotation: "90deg" },
-    { id: 3, top: "60%", left: "83%", rotation: "90deg" },
-    { id: 4, top: "75%", left: "50%", rotation: "90deg" },
-  ];
+
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
@@ -29,137 +23,132 @@ const Blog = () => {
     fetchBlogs();
   }, []);
 
-  const filteredArticles =
-    activeCategory === "All Articles"
-      ? articles
-      : articles.filter(
-          (art) =>
-            art.tags?.includes(activeCategory) ||
-            art.category === activeCategory,
-        );
-
   if (loading)
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center text-[#DD9735] tracking-widest uppercase">
-        Loading Journal...
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center text-[#DD9735] text-xs tracking-widest uppercase">
+        Loading...
       </div>
     );
 
   return (
-    <div className="bg-[#050505] text-white min-h-screen pb-24 relative overflow-hidden font-sans">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+    <div className="bg-[#050505] text-white min-h-screen pb-20 font-sans selection:bg-[#DD9735]/30">
+      <div className="max-w-6xl mx-auto px-6 relative z-10">
         <AnimatePresence mode="wait">
           {selectedArticle ? (
-            /* --- FULL ARTICLE VIEW --- */
+            /* --- STANDARDIZED DETAIL VIEW --- */
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="pt-20 max-w-4xl mx-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="pt-20 flex flex-col items-center"
             >
-              <button
-                onClick={() => setSelectedArticle(null)}
-                className="flex items-center gap-2 text-gray-500 hover:text-[#DD9735] transition-colors mb-8 group"
-              >
-                <ChevronLeft
-                  size={20}
-                  className="group-hover:-translate-x-1 transition-transform"
-                />{" "}
-                Back 
-              </button>
+              {/* 1. Back Button */}
+              <div className="w-full max-w-xl flex justify-start mb-8">
+                <button
+                  onClick={() => setSelectedArticle(null)}
+                  className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm font-medium"
+                >
+                  <ChevronLeft size={16} /> Back to Blog
+                </button>
+              </div>
 
-              <div className="space-y-6 mb-12">
-                <div className="flex items-center gap-4 text-[#DD9735] text-sm tracking-widest uppercase">
-                  <span>{selectedArticle.category || "Insight"}</span>
-                  <span className="w-10 h-[1px] bg-[#DD9735]/30"></span>
-                  <span>
+              {/* 2. Image at the Top */}
+              <div className="w-full max-w-xl mb-10">
+                <img
+                  src={
+                    selectedArticle.image
+                      ? `${IMAGE_PATH}/${selectedArticle.image}`
+                      : "https://via.placeholder.com/800x450"
+                  }
+                  crossOrigin="anonymous"
+                  className="w-full h-auto max-h-[350px] object-cover rounded-lg border border-white/10 shadow-lg"
+                  alt={selectedArticle.title}
+                />
+              </div>
+
+              {/* 3. Title & Meta Section (Aligned to image start) */}
+              <header className="max-w-xl w-full text-left space-y-4 mb-10">
+                <p className="text-[#DD9735] text-[11px] font-bold tracking-[0.2em] uppercase">
+                  {selectedArticle.category || "Insight"}
+                </p>
+                <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight">
+                  {selectedArticle.title}
+                </h1>
+                {/* Author and Date below Title */}
+                <div className="flex items-center gap-4 text-gray-500 text-sm pt-2">
+                  <span className="flex items-center gap-1.5">
+                    <User size={14} className="text-[#DD9735]" />{" "}
+                    {selectedArticle.author || "Admin"}
+                  </span>
+                  <span className="w-1 h-1 bg-gray-700 rounded-full"></span>
+                  <span className="flex items-center gap-1.5">
+                    <Calendar size={14} className="text-[#DD9735]" />{" "}
                     {new Date(selectedArticle.createdAt).toLocaleDateString()}
                   </span>
                 </div>
-                <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-                  {selectedArticle.title}
-                </h1>
-                <div className="flex items-center gap-6 text-gray-400 text-sm">
-                  <div className="flex items-center gap-2">
-                    <User size={16} /> {selectedArticle.author || "Admin"}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Calendar size={16} /> 5 min read
-                  </div>
-                </div>
-              </div>
+              </header>
 
-              {/* 2. Simplified Image for Full View */}
-              <img
-                src={
-                  selectedArticle.image
-                    ? `${IMAGE_PATH}/${selectedArticle.image}`
-                    : "https://via.placeholder.com/1200x600?text=No+Image"
-                }
-                crossOrigin="anonymous"
-                className="w-full h-[400px] object-cover rounded-3xl mb-12 border border-white/10 shadow-2xl"
-                alt={selectedArticle.title}
-              />
-
-              <div className="prose prose-invert prose-orange max-w-none">
-                <p className="text-xl text-gray-300 leading-relaxed first-letter:text-5xl first-letter:font-bold first-letter:text-[#DD9735] first-letter:mr-3 first-letter:float-left">
+              {/* 4. Content Body */}
+              <article className="max-w-xl w-full text-left">
+                <p className="text-gray-300 leading-relaxed text-[17px] whitespace-pre-wrap font-normal">
                   {selectedArticle.content}
                 </p>
-              </div>
+              </article>
             </motion.div>
           ) : (
-            /* --- BLOG LIST VIEW --- */
+            /* --- NORMAL 3-COLUMN GRID --- */
             <div className="pt-20">
-              {/* Header and Categories omitted for brevity, keep your existing code here */}
+              <div className="text-center mb-16 space-y-3">
+                {/* <h2 className="text-[#DD9735] text-2xl  uppercase font-bold">
+                  Blog Posts
+                </h2> */}
+                <h2 className="text-4xl bg-gradient-to-r from-[#DD9735] to-[#f9d423] bg-clip-text text-transparent font-bold">
+                  Latest Blogs
+                </h2>
+                <p className="text-gray-500 text-md max-w-lg mx-auto">
+                  Latest updates and insights from our team.
+                </p>
+              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 mt-16">
-                {filteredArticles.map((article) => (
-                  <article key={article._id} className="group flex flex-col">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {articles.map((article) => (
+                  <article
+                    key={article._id}
+                    className="flex flex-col group border border-white/5 bg-white/[0.01] p-4 rounded-xl hover:bg-white/[0.03] transition-all duration-300"
+                  >
                     <div
-                      className="relative h-64 overflow-hidden rounded-2xl mb-6 cursor-pointer"
+                      className="relative aspect-video w-full overflow-hidden rounded-lg mb-5 cursor-pointer"
                       onClick={() => setSelectedArticle(article)}
                     >
-                      {/* 3. Simplified Image for Grid Cards */}
                       <img
-                        src={
-                          article.image
-                            && `${IMAGE_PATH}/${article.image}`
-                        }
+                        src={article.image && `${IMAGE_PATH}/${article.image}`}
                         alt={article.title}
                         loading="lazy"
                         crossOrigin="anonymous"
-                        className="w-full h-full object-cover rounded-2xl transition-transform duration-700 group-hover:scale-110"
-                        
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     </div>
 
-                    <div className="flex items-center gap-3 text-[#DD9735] text-[10px] tracking-[0.2em] uppercase mb-4">
-                      <span>
+                    <div className="flex flex-col flex-1">
+                      <p className="text-[#DD9735] text-[10px] font-bold tracking-widest uppercase mb-2">
                         {new Date(article.createdAt).toLocaleDateString()}
-                      </span>
-                      <span className="w-4 h-[1px] bg-[#DD9735]"></span>
-                      <span>{article.category || "Article"}</span>
+                      </p>
+                      <h3
+                        className="text-lg font-bold mb-3 group-hover:text-[#DD9735] transition-colors cursor-pointer line-clamp-2 leading-normal py-1"
+                        onClick={() => setSelectedArticle(article)}
+                      >
+                        {article.title}
+                      </h3>
+                      <p className="text-gray-400 text-[14px] leading-relaxed line-clamp-3 mb-5 font-normal">
+                        {article.content}
+                      </p>
+                      <button
+                        onClick={() => setSelectedArticle(article)}
+                        className="mt-auto flex items-center gap-2 text-white text-xs font-bold uppercase tracking-wider group-hover:text-[#DD9735] transition-colors"
+                      >
+                        Read More <ArrowRight size={14} />
+                      </button>
                     </div>
-
-                    <h3
-                      className="text-2xl font-bold mb-4 line-clamp-2 group-hover:text-[#DD9735] transition-colors cursor-pointer"
-                      onClick={() => setSelectedArticle(article)}
-                    >
-                      {article.title}
-                    </h3>
-
-                    <p className="text-gray-400 text-sm leading-relaxed line-clamp-3 mb-6">
-                      {article.content}
-                    </p>
-
-                    <button
-                      onClick={() => setSelectedArticle(article)}
-                      className="mt-auto flex items-center gap-2 text-white font-bold text-sm group-hover:gap-4 transition-all"
-                    >
-                      READ MORE{" "}
-                      <ArrowRight size={16} className="text-[#DD9735]" />
-                    </button>
                   </article>
                 ))}
               </div>
@@ -167,27 +156,6 @@ const Blog = () => {
           )}
         </AnimatePresence>
       </div>
-      {hexagons.map((hex) => (
-                <div
-                  key={hex.id}
-                  className="hexagon"
-                  style={{
-                    position: "fixed",
-                    top: hex.top || "auto",
-                    bottom: hex.bottom || "auto",
-                    left: hex.left,
-                    transform: `rotate(${hex.rotation})`,
-                    zIndex: 1,
-                    opacity: 0.2,
-                  }}
-                >
-                  <img
-                    src={image}
-                    alt={`Hexagon ${hex.id}`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ))}
     </div>
   );
 };
