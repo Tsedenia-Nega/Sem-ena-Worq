@@ -1,138 +1,128 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
-
-const testimonials = [
-  {
-    id: 1,
-    name: "Amiy kolby",
-    role: "Director at xyz",
-    text: "The technical expertise and attention to detail were beyond our expectations. Highly recommended for premium projects.",
-    image: "https://i.pravatar.cc/150?u=11",
-  },
-  {
-    id: 2,
-    name: "Sara Jensen",
-    role: "CEO at ABC",
-    text: "Innovative designs and a pleasure to work with. They really understand modern aesthetics and branding.",
-    image: "https://i.pravatar.cc/150?u=22",
-  },
-  {
-    id: 3,
-    name: "Marcus Thorne",
-    role: "Manager at Tech",
-    text: "They transformed our vision into a stunning reality. The workflow was seamless and very professional.",
-    image: "https://i.pravatar.cc/150?u=33",
-  },
-  {
-    id: 4,
-    name: "Elena Rodriguez",
-    role: "Founder at Bloom",
-    text: "Excellent service and professional approach. They are truly the best in the industry for digital farming.",
-    image: "https://i.pravatar.cc/150?u=44",
-  },
-];
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import api, { IMAGE_PATH } from "../api/axios";
+import { User, Star } from "lucide-react";
 
 const Testimonials = () => {
-  const [index, setIndex] = useState(0);
+  const [testimonials, setTestimonials] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const next = () => setIndex((prev) => (prev + 1) % (testimonials.length - 2));
-  const prev = () =>
-    setIndex(
-      (prev) =>
-        (prev - 1 + (testimonials.length - 2)) % (testimonials.length - 2),
-    );
+  useEffect(() => {
+    const fetchPublicTestimonials = async () => {
+      try {
+        const res = await api.get(`/testimony/get?limit=10`);
+        const publicOnly = res.data.testimonials.filter(
+          (t) => t.visibility === "public",
+        );
+        setTestimonials([...publicOnly, ...publicOnly]);
+      } catch (err) {
+        console.error("Failed to load testimonials", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPublicTestimonials();
+  }, []);
+
+  if (loading || testimonials.length === 0) return null;
 
   return (
-    <div className="min-h-screen bg-black text-white py-24 px-10 relative overflow-hidden font-itim">
-      {/* Decorative Hexagon Patterns */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-[#DD9735]/5 clip-hexagon -z-10 translate-x-20 -translate-y-20" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#DD9735]/5 clip-hexagon -z-10 -translate-x-10 translate-y-10" />
-
-      <h2 className="text-center text-[#DD9735] text-5xl mb-24 tracking-widest uppercase">
-        Testimonials
-      </h2>
-
-      <div className="max-w-7xl mx-auto flex items-center justify-center relative">
-        {/* Creative Circular Arrows */}
-        <button
-          onClick={prev}
-          className="absolute left-[-20px] z-50 w-14 h-14 rounded-full bg-[#DD9735] text-black flex items-center justify-center shadow-[0_0_20px_rgba(221,151,53,0.5)] hover:scale-110 transition-transform active:scale-90"
+    <section className=" bg-black overflow-hidden relative">
+    
+      <div className="max-w-7xl mx-auto px-6 mb-22 text-center relative z-10">
+        <motion.h3
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-4xl md:text-6xl font-black tracking-tighter uppercase text-white italic"
         >
-          <ChevronLeft size={30} strokeWidth={3} />
-        </button>
+          Voices of{" "}
+          <span className="text-[#DD9735] drop-shadow-[0_0_15px_rgba(221,151,53,0.6)]">
+            Partnership
+          </span>
+        </motion.h3>
+        <div className="w-24 h-1.5 bg-[#DD9735] mx-auto mt-6 rounded-full shadow-[0_0_20px_#DD9735]"></div>
+      </div>
 
-        <button
-          onClick={next}
-          className="absolute right-[-20px] z-50 w-14 h-14 rounded-full bg-[#DD9735] text-black flex items-center justify-center shadow-[0_0_20px_rgba(221,151,53,0.5)] hover:scale-110 transition-transform active:scale-90"
+      <div className="flex relative pt-20">
+        <motion.div
+          className="flex gap-12"
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{
+            ease: "linear",
+            duration: 18, // High-energy speed
+            repeat: Infinity,
+          }}
         >
-          <ChevronRight size={30} strokeWidth={3} />
-        </button>
-
-        {/* The Grid Container */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full overflow-hidden">
-          <AnimatePresence mode="wait">
-            {testimonials.slice(index, index + 3).map((item, i) => (
-              <motion.div
-                key={item.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                whileHover={{ rotateY: 10, rotateX: 5 }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="relative bg-gradient-to-b from-[#DD9735]/20 to-[#B37216]/60 p-1 rounded-sm group overflow-hidden"
+          {testimonials.map((item, index) => (
+            <div
+              key={`${item._id}-${index}`}
+              className="w-[350px] md:w-[450px] shrink-0 relative"
+            >
+              {/* --- THE CARD BODY --- */}
+              <div
+                className="
+                relative bg-[#0A0A0A] 
+                rounded-[3rem] p-10 pt-20 flex flex-col items-center text-center 
+                /* DEFINED BORDER: Makes the card shape visible on black */
+                border-2 border-[#DD9735]/30
+                shadow-[0_10px_40px_rgba(0,0,0,0.8),0_0_20px_rgba(221,151,53,0.05)]
+              "
               >
-                {/* Inner Card Content */}
-                <div className="bg-[#111] p-8 md:p-10 h-full flex flex-col items-center text-center group-hover:bg-transparent transition-colors duration-500">
-                  {/* Standardized Circular Headshot */}
-                  <div className="relative mb-8">
-                    <div className="w-24 h-24 rounded-full p-1 bg-[#DD9735]">
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="w-full h-full rounded-full object-cover filter contrast-125"
-                      />
+                {/* --- FLOATING AVATAR --- */}
+                <div className="absolute -top-14 left-1/2 -translate-x-1/2 z-20">
+                  <div className="w-28 h-28 rounded-full p-[4px] bg-gradient-to-b from-[#DD9735] to-transparent shadow-[0_15px_30px_rgba(0,0,0,0.9)]">
+                    <div className="w-full h-full rounded-full border-[6px] border-[#0A0A0A] bg-zinc-900 overflow-hidden">
+                      {item.image ? (
+                        <img
+                          src={`${IMAGE_PATH}/${item.image}`}
+                          alt={item.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-500">
+                          <User size={40} />
+                        </div>
+                      )}
                     </div>
-                    <div className="absolute -bottom-2 -right-2 bg-[#DD9735] p-2 rounded-full text-black">
-                      <Quote size={14} fill="currentColor" />
-                    </div>
-                  </div>
-
-                  <p className="text-gray-300 italic mb-8 min-h-[80px] leading-relaxed">
-                    "{item.text}"
-                  </p>
-
-                  <div className="mt-auto">
-                    <h3 className="text-[#DD9735] text-xl font-bold">
-                      {item.name}
-                    </h3>
-                    <p className="text-gray-500 text-sm uppercase tracking-widest mt-1">
-                      {item.role}
-                    </p>
                   </div>
                 </div>
 
-                {/* Decorative Hover Glow */}
-                <div className="absolute inset-0 bg-[#DD9735]/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
-      </div>
+                {/* --- USER INFO --- */}
+                <div className="mb-6">
+                  <h4 className="text-2xl font-black text-white tracking-tight italic">
+                    {item.name}
+                  </h4>
+                  <p className="text-[#DD9735] text-[11px] font-bold uppercase tracking-[0.3em] mt-2 opacity-90">
+                    {item.company}
+                  </p>
+                </div>
 
-      <style jsx>{`
-        .clip-hexagon {
-          clip-path: polygon(
-            25% 0%,
-            75% 0%,
-            100% 50%,
-            75% 100%,
-            25% 100%,
-            0% 50%
-          );
-        }
-      `}</style>
-    </div>
+                {/* --- TESTIMONY (ENHANCED VISIBILITY) --- */}
+                <p className="text-white text-lg md:text-xl font-medium leading-snug tracking-tight mb-8 px-2 opacity-100">
+                  “{item.content}”
+                </p>
+
+                {/* --- BOTTOM RATING --- */}
+                <div className="flex gap-1.5 mt-auto bg-white/5 px-4 py-2 rounded-full border border-white/10">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      size={14}
+                      className="fill-[#DD9735] text-[#DD9735] drop-shadow-[0_0_5px_rgba(221,151,53,0.5)]"
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Edge Masking */}
+        <div className="absolute inset-y-0 left-0 w-64 bg-gradient-to-r from-black via-black/90 to-transparent z-30 pointer-events-none"></div>
+        <div className="absolute inset-y-0 right-0 w-64 bg-gradient-to-l from-black via-black/90 to-transparent z-30 pointer-events-none"></div>
+      </div>
+    </section>
   );
 };
 

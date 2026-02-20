@@ -17,6 +17,8 @@ import {
   Users,
   Database,
 } from "lucide-react";
+// import TestimonialManager from "../components/admin/contentManager/TestimonialManager";
+import Testimonials from "./Testimonials";
 
 const Home = () => {
   const [testimonials, setTestimonials] = useState([]);
@@ -198,13 +200,12 @@ const Home = () => {
       </section>
 
       {/* --- TESTIMONY SECTION --- */}
-      <section className="py-32 px-6 md:px-24 bg-[#080808] border-t border-white/5 relative z-10">
+      <section className="pt-6 pb-12 px-6 md:px-24 bg-[#080808] border-t border-white/5 relative z-10">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-24">
-            <h3 className="text-3xl md:text-4xl font-bold tracking-tight uppercase">
-              Voices of Partnership
-            </h3>
-          </div>
+          
+           <Testimonials />
+           
+          
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {testimonials.map((t) => (
