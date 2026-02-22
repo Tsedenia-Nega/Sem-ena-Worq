@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import api, { IMAGE_PATH } from "../../../api/axios"; // adjust path if needed
+import api, { IMAGE_PATH } from "../../../api/axios"; 
 import { Edit, Trash2 } from "lucide-react";
 
 const ServicesManager = () => {
@@ -16,7 +16,7 @@ const ServicesManager = () => {
     image: null,
   });
 
-  // ================= FETCH =================
+
   const fetchServices = async (page = 1) => {
     try {
       setLoading(true);
@@ -35,7 +35,6 @@ const ServicesManager = () => {
     fetchServices();
   }, []);
 
-  // ================= INPUT =================
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
@@ -46,7 +45,7 @@ const ServicesManager = () => {
     }
   };
 
-  // ================= CREATE / UPDATE =================
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -73,7 +72,6 @@ const ServicesManager = () => {
     }
   };
 
-  // ================= DELETE =================
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this service?")) return;
 
@@ -85,7 +83,7 @@ const ServicesManager = () => {
     }
   };
 
-  // ================= EDIT =================
+
   const handleEdit = (service) => {
     setEditingService(service);
     setFormData({
@@ -104,7 +102,7 @@ const ServicesManager = () => {
 
   return (
     <div>
-      {/* ADD BUTTON */}
+ 
       <button
         onClick={() => setShowModal(true)}
         className="mb-6 px-5 py-2 bg-[#DD9735] text-black font-semibold rounded-lg"
@@ -112,10 +110,10 @@ const ServicesManager = () => {
         Add Service
       </button>
 
-      {/* LOADING */}
+    
       {loading && <p className="text-gray-400">Loading...</p>}
 
-      {/* LIST */}
+      
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {services.map((service) => (
           <div
@@ -153,7 +151,7 @@ const ServicesManager = () => {
         ))}
       </div>
 
-      {/* MODAL */}
+      
       {showModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
           <div className="bg-[#111] p-8 rounded-2xl w-[420px] border border-white/10">
@@ -207,7 +205,7 @@ const ServicesManager = () => {
         </div>
       )}
 
-      {/* PAGINATION */}
+   
       <div className="flex justify-center gap-3 mt-10">
         {Array.from(
           { length: pagination.totalPages || 1 },

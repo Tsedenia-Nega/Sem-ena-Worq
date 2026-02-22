@@ -85,7 +85,6 @@ const HomeManager = () => {
           </div>
         </div>
 
-        {/* Error Alert */}
         {error && (
           <div className="mb-6 p-4 bg-red-500/10 border border-red-500/50 rounded-lg flex items-center gap-3 text-red-500">
             <AlertCircle size={20} />

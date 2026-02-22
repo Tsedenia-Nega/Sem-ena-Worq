@@ -1,5 +1,5 @@
 import express from 'express';
-import PortfolioController from '../controllers/PortfolioController.js';
+import PortfolioController from '../controllers/portfolioController.js';
 import PortfolioRepository from '../../Repositories/portfolioRepo.js';
 import authMiddleware from '../../adapters/Middlewares/AuthMiddleware.js';
 import upload from '../../adapters/Middlewares/imageMiddleware.js';
