@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import api, { IMAGE_PATH } from "../api/axios";
 import "./../components/layout.css";
 import image from "./../assets/image.jpg";
-import Hexagons from "./../components/Hexagons";
+import Hexagons from "./../components/hexagons";
 import Footer from "./../components/Footer";
 import { Link } from "react-router-dom";
 import {
