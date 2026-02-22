@@ -2,7 +2,7 @@ import React from "react";
 import "./../components/layout.css";
 import hexImage from "./../assets/image.jpg";
 import Navbar from "../components/Navbar";
-import Portfolio from "../components/Portfolio";
+import Portfolio from "../components/portfolio";
 
 const MyPortfolio = () => {
   // Same hexagon data...
