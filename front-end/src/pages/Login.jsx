@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { FaUser, FaLock } from "react-icons/fa";
 import logo from "./../assets/Logo.PNG";
-import Hexagons from "./../components/Hexagons";
+import Hexagons from "./../components/hexagons";
 import api from "../api/axios";
 
 function LoginPage({setUser}) {
