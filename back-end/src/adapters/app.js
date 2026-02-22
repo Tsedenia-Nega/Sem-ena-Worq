@@ -26,7 +26,7 @@ connectToDatabase();
 // Middleware
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173", // Point this to your Frontend
+    origin: process.env.FRONTEND_URL;
     credentials: true,
   }),
 );
