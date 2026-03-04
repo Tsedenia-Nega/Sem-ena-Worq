@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import { Facebook, X, Linkedin, Instagram } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -27,7 +27,7 @@ const Footer = () => {
           <div className="flex gap-4">
             <Facebook size={20} className="text-gray-500 hover:text-[#DD9735] cursor-pointer" />
             <Linkedin size={20} className="text-gray-500 hover:text-[#DD9735] cursor-pointer" />
-            <Twitter size={20} className="text-gray-500 hover:text-[#DD9735] cursor-pointer" />
+            <X size={20} className="text-gray-500 hover:text-[#DD9735] cursor-pointer" />
           </div>
         </div>
       </div>
