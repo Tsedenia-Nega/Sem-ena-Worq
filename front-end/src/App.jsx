@@ -18,8 +18,10 @@ import PortfolioManager from "./components/admin/contentManager/PortfolioManager
 import TestimonialManager from "./components/admin/contentManager/TestimonialManager";
 import Profile from "./components/admin/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { useAuth } from "./contexts/AuthContext"; // Import the hook
+import { useAuth } from "./contexts/AuthContext"; 
 import HomeManager from "./components/admin/contentManager/HomeManager";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 const MainLayout = () => (
   <>
     <Navbar />
@@ -45,8 +47,9 @@ function App() {
             <Route path="/blog" element={<Blog />} />
             <Route path="/service" element={<Services />} />
             <Route path="/portfolio" element={<Portfolio />} />
-
+            <Route path="/forgot" element={<ForgotPassword />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/reset" element={<ResetPassword />} />
           </Route>
 
           <Route
