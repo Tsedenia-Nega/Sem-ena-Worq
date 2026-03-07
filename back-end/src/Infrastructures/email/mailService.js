@@ -18,7 +18,7 @@ class MailService {
   async sendEmail(to, subject, text) {
     try {
       const mailOptions = {
-        from: `Admin Portal <${process.env.EMAIL_USER}>`, // Custom display name
+        from: `Admin Portal <${process.env.EMAIL_USER}>`,
         to: to,
         subject: subject,
         text: text,
@@ -34,7 +34,7 @@ class MailService {
   }
 
   async sendPasswordResetEmail(to, resetToken) {
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+    const resetLink = `${process.env.FRONTEND_URL}/reset?token=${resetToken}`;
     const subject = "Password Reset Request";
     const text = `We received a request to reset your password. Click the link below to reset your password:\n\n${resetLink}\n\nIf you did not request this, please ignore this email.`;
 

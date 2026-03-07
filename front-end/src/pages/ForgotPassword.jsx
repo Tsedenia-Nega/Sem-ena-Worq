@@ -3,64 +3,88 @@ import axios from "axios";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ type: "", text: "" });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setMessage({ type: "", text: "" });
+
     try {
-      const response = await axios.post(
-        "http://localhost:5000/sem&worq/forgot-password",
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/sem&worq/forgot-password`,
         { email },
       );
-      setMessage(response.data.message);
-      setError("");
+      setMessage({ type: "success", text: res.data.message });
     } catch (err) {
-      setError(err.response?.data?.error || "Something went wrong");
-      setMessage("");
+      setMessage({
+        type: "error",
+        text: err.response?.data?.error || "Connection failed",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-[#1a1a1a] p-8 rounded-lg border border-[#DD9735]/20 shadow-xl">
-        <h2 className="text-3xl font-bold text-[#DD9735] mb-2">
-          Forgot Password?
-        </h2>
-        <p className="text-white/60 mb-6">
-          Enter your email to receive a reset link.
-        </p>
+    <div className="min-h-screen bg-black flex items-center justify-center font-sans">
+      <div className="w-full max-w-md p-8 bg-[#111111] border border-[#DD9735]/30 rounded-2xl shadow-2xl">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-[#DD9735] tracking-tight mb-2">
+            Sem & Worq
+          </h1>
+          <p className="text-white/60">Reset your admin access</p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-white mb-2">Email Address</label>
+            <label className="block text-white text-sm font-medium mb-2">
+              Email Address
+            </label>
             <input
               type="email"
-              className="w-full p-3 rounded bg-black border border-[#DD9735]/50 text-white focus:outline-none focus:border-[#DD9735]"
-              placeholder="admin@semworq.com"
+              required
+              className="w-full bg-black border border-white/10 text-white p-3 rounded-lg focus:outline-none focus:border-[#DD9735] transition-all"
+              placeholder="name@company.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
             />
           </div>
+
           <button
             type="submit"
-            className="w-full bg-[#DD9735] text-white font-bold py-3 rounded hover:bg-[#c6862f] transition-colors"
+            disabled={loading}
+            className={`w-full py-3 rounded-lg font-bold text-white transition-all ${
+              loading
+                ? "bg-[#DD9735]/50 cursor-not-allowed"
+                : "bg-[#DD9735] hover:bg-[#c6862f] shadow-lg shadow-[#DD9735]/20"
+            }`}
           >
-            Send Reset Link
+            {loading ? "Sending..." : "Send Reset Link"}
           </button>
         </form>
 
-        {message && (
-          <p className="mt-4 text-green-500 text-sm bg-green-500/10 p-2 rounded border border-green-500/20">
-            {message}
-          </p>
+        {message.text && (
+          <div
+            className={`mt-6 p-4 rounded-lg text-sm border ${
+              message.type === "success"
+                ? "bg-green-500/10 border-green-500/50 text-green-400"
+                : "bg-red-500/10 border-red-500/50 text-red-400"
+            }`}
+          >
+            {message.text}
+          </div>
         )}
-        {error && (
-          <p className="mt-4 text-red-500 text-sm bg-red-500/10 p-2 rounded border border-red-500/20">
-            {error}
-          </p>
-        )}
+
+        <div className="mt-8 text-center">
+          <a
+            href="/management-portal-xyz/login"
+            className="text-white/40 hover:text-[#DD9735] text-sm transition-colors"
+          >
+            Back to Login
+          </a>
+        </div>
       </div>
     </div>
   );
