@@ -9,8 +9,7 @@ const ResetPassword = () => {
   const [message, setMessage] = useState({ type: "", text: "" });
 const [searchParams] = useSearchParams();
 const resetToken = searchParams.get("token");
-//   const query = new URLSearchParams(useLocation().search);
-//   const resetToken = query.get("token");
+
   const navigate = useNavigate();
 
   const handleReset = async (e) => {

@@ -114,7 +114,7 @@ function LoginPage({setUser}) {
 
             <div className="flex justify-end">
               <Link
-                to="/forgot-password"
+                to="/forgot"
                 size="sm"
                 className="text-[10px] text-white/30 hover:text-[#DD9735] uppercase font-bold tracking-widest transition-colors"
               >

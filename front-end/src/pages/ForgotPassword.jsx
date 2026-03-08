@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
-
+const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -17,6 +17,7 @@ const ForgotPassword = () => {
         { email },
       );
       setMessage({ type: "success", text: res.data.message });
+       setTimeout(() => navigate("/management-portal-xyz/login"), 3000);
     } catch (err) {
       setMessage({
         type: "error",
