@@ -23,10 +23,15 @@ import HomeManager from "./components/admin/contentManager/HomeManager";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 const MainLayout = () => (
-  <>
+
+  <div className="min-h-screen bg-white text-black dark:bg-black dark:text-white transition-colors duration-300">
     <Navbar />
-    <Outlet /> 
-  </>
+    <div className="pt-4">
+      {" "}
+      {/* Optional padding for navbar spacing */}
+      <Outlet />
+    </div>
+  </div>
 );
 
 function App() {
