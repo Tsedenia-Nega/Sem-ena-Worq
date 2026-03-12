@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import api,{IMAGE_PATH}from "../api/axios"; // Importing your custom axios instance
+import api, { IMAGE_PATH } from "../api/axios"; // Importing your custom axios instance
 import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 
 const Portfolio = () => {
@@ -7,7 +7,6 @@ const Portfolio = () => {
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  
   useEffect(() => {
     const fetchPortfolios = async () => {
       try {
@@ -35,10 +34,22 @@ const Portfolio = () => {
     );
 
   return (
-    <div className="relative w-full bg-[#0d0d0d] flex flex-col items-center py-5 px-4 font-itim">
-      <h1 className="bg-gradient-to-r from-[#DD9735] to-[#f9d423] bg-clip-text text-transparent text-4xl font-bold mb-6 tracking-tight">
+    <div className="relative w-full bg-[#0d0d0d] flex flex-col items-center py-10 px-4 font-itim">
+      <h1 className="bg-gradient-to-r from-[#DD9735] to-[#f9d423] bg-clip-text text-transparent text-4xl font-bold mb-2 tracking-tight">
         Portfolio
       </h1>
+
+      {/* --- New Description Section --- */}
+      <div className="max-w-2xl text-center mb-12">
+        <div className="w-12 h-[2px] bg-[#DD9735] mx-auto mb-4"></div>
+        <p className="text-white/70 text-lg md:text-xl font-light leading-relaxed px-6">
+          A curated showcase of professional projects and creative explorations,
+          bridging the gap between{" "}
+          <span className="text-[#DD9735]">technical precision</span> and{" "}
+          <span className="text-[#DD9735]">innovative design.</span>
+        </p>
+      </div>
+      {/* ------------------------------- */}
 
       <div className="relative w-full max-w-4xl flex items-center justify-center px-4">
         <button
@@ -63,15 +74,17 @@ const Portfolio = () => {
               return (
                 <div
                   key={project._id}
-                  className={`transition-all duration-700 ease-in-out rounded-2xl overflow-hidden flex flex-col ${isCenter ? "w-[300px] sm:w-[340px] h-[65vh] max-h-[480px] min-h-[400px] z-20 opacity-100 shadow-2xl scale-100" : "w-[240px] h-[55vh] max-h-[400px] min-h-[350px] opacity-20 scale-90 blur-[1px] hidden md:flex"} bg-gradient-to-b from-[#A67C45] via-[#734f26] to-[#1a1107] border border-white/10`}
+                  className={`transition-all duration-700 ease-in-out rounded-2xl overflow-hidden flex flex-col ${
+                    isCenter
+                      ? "w-[300px] sm:w-[340px] h-[65vh] max-h-[480px] min-h-[400px] z-20 opacity-100 shadow-2xl scale-100"
+                      : "w-[240px] h-[55vh] max-h-[400px] min-h-[350px] opacity-20 scale-90 blur-[1px] hidden md:flex"
+                  } bg-gradient-to-b from-[#A67C45] via-[#734f26] to-[#1a1107] border border-white/10`}
                 >
                   <div className="h-[40%] w-full bg-black/40">
                     <img
-               
                       src={`${IMAGE_PATH}/${project.image}`}
                       alt={project.title}
                       className="w-full h-full object-cover"
-                      
                     />
                   </div>
 
@@ -108,8 +121,7 @@ const Portfolio = () => {
         </button>
       </div>
 
-      
-<div className="flex gap-3 mt-12">
+      <div className="flex gap-3 mt-12">
         {projects.map((_, i) => (
           <button
             key={i}
