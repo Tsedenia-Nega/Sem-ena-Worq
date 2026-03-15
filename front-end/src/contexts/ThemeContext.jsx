@@ -1,11 +1,16 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+
 const ThemeContext = createContext();
+
 export const ThemeProvider = ({ children }) => {
-  const [isDarkMode, setIsDarkMode] = useState(
-    localStorage.getItem("theme") === "dark" ||
-      (!("theme" in localStorage) &&
-        window.matchMedia("(prefers-color-scheme:dark)")),
-  );
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const storedTheme = localStorage.getItem("theme");
+    if (storedTheme) {
+      return storedTheme === "dark";
+    }
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
+
   useEffect(() => {
     const root = window.document.documentElement;
     if (isDarkMode) {
@@ -16,7 +21,8 @@ export const ThemeProvider = ({ children }) => {
       localStorage.setItem("theme", "light");
     }
   }, [isDarkMode]);
-  const toggleTheme = () => setIsDarkMode(!isDarkMode);
+
+  const toggleTheme = () => setIsDarkMode((prev) => !prev);
 
   return (
     <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
@@ -24,4 +30,5 @@ export const ThemeProvider = ({ children }) => {
     </ThemeContext.Provider>
   );
 };
+
 export const useTheme = () => useContext(ThemeContext);

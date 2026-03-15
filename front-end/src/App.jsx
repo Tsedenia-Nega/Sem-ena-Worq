@@ -44,7 +44,7 @@ function App() {
      </div>
    );
   return (
-    <ThemeProvider>
+    <>
       <Router>
         <Routes>
           <Route element={<MainLayout />}>
@@ -77,7 +77,7 @@ function App() {
           <Route path="*" element={<div>404 Page Not Found</div>} />
         </Routes>
       </Router>
-    </ThemeProvider>
+    </>
   );
 }
 

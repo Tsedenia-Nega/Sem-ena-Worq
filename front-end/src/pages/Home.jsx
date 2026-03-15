@@ -17,7 +17,7 @@ import {
   Users,
   Database,
 } from "lucide-react";
-// import TestimonialManager from "../components/admin/contentManager/TestimonialManager";
+
 import Testimonials from "./Testimonials";
 
 const Home = () => {
