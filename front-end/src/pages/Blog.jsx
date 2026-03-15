@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import api, { IMAGE_PATH } from "../api/axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ChevronLeft, User, Calendar } from "lucide-react";
-
+import image from "./../assets/image.jpg";
 const Blog = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,6 +29,12 @@ const Blog = () => {
         Loading...
       </div>
     );
+const hexagons = [
+  { id: 1, top: "-15%", left: "48%", rotation: "90deg" },
+  { id: 2, top: "30%", left: "58%", rotation: "90deg" },
+  { id: 3, top: "60%", left: "83%", rotation: "90deg" },
+  { id: 4, top: "75%", left: "50%", rotation: "90deg" },
+];
 
   return (
     <div className="bg-[#050505] text-white min-h-screen pb-20 font-sans selection:bg-[#DD9735]/30">
@@ -156,6 +162,28 @@ const Blog = () => {
           )}
         </AnimatePresence>
       </div>
+      {/* Hexagons Background */}
+            {hexagons.map((hex) => (
+              <div
+                key={hex.id}
+                className="hexagon pointer-events-none"
+                style={{
+                  position: "fixed",
+                  top: hex.top || "auto",
+                  bottom: hex.bottom || "auto",
+                  left: hex.left,
+                  transform: `rotate(${hex.rotation})`,
+                  zIndex: 1,
+                  opacity: 0.2,
+                }}
+              >
+                <img
+                  src={image}
+                  alt={`Hexagon ${hex.id}`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ))}
     </div>
   );
 };
