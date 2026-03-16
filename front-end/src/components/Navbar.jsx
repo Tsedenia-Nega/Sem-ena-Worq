@@ -21,7 +21,7 @@ const Navbar = () => {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
-    <header className="w-full h-20  bg-black border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-8 sticky top-0 z-50 transition-colors duration-300">
+    <header className="w-full h-20  bg-black dark:border-gray-800 flex items-center justify-between px-8 sticky top-0 z-50 transition-colors duration-100">
       {/* Brand Logo */}
       <Link to="/" className="flex items-center shrink-0">
         <img src={logo} alt="Logo" className="w-16 h-auto" />
@@ -87,7 +87,7 @@ const Navbar = () => {
         }`}
       >
         {/* The Background Layer with Blur to match Desktop */}
-        <div className="absolute inset-0  dark:bg-stone-950/95 backdrop-blur-xl transition-colors duration-300" />
+        <div className="absolute inset-0  dark:bg-stone-950/95 backdrop-blur-xl transition-colors duration-100" />
 
         <nav className="relative flex flex-col items-center pt-12 space-y-10 h-full">
           {navLinks.map((link) => (
