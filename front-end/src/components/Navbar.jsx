@@ -87,7 +87,7 @@ const Navbar = () => {
         }`}
       >
         {/* The Background Layer with Blur to match Desktop */}
-        <div className="absolute inset-0 bg-white/95 dark:bg-stone-950/95 backdrop-blur-xl transition-colors duration-300" />
+        <div className="absolute inset-0  dark:bg-stone-950/95 backdrop-blur-xl transition-colors duration-300" />
 
         <nav className="relative flex flex-col items-center pt-12 space-y-10 h-full">
           {navLinks.map((link) => (

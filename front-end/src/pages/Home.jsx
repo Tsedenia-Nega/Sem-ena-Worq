@@ -23,7 +23,7 @@ import Testimonials from "./Testimonials";
 
 const Home = () => {
   const [testimonials, setTestimonials] = useState([]);
-  const [loading, setLoading] = useState(false);
+  
  const hexagons = [
    { id: 1, top: "-15%", left: "48%", rotation: "90deg" },
    { id: 2, top: "30%", left: "58%", rotation: "90deg" },
