@@ -58,8 +58,11 @@ const Home = () => {
           </p>
 
           {/* MAIN TITLE - Centered */}
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-10 uppercase">
-            SEM ENA <span className="bg-gradient-to-r from-[#DD9735] to-[#f9d423] bg-clip-text text-transparent">WORQ</span>
+          <h1 className="text-[10vw] md:text-7xl font-bold tracking-tighter mb-10 uppercase">
+            SEM ENA{" "}
+            <span className="bg-gradient-to-r from-[#DD9735] to-[#f9d423] bg-clip-text text-transparent">
+              WORQ
+            </span>
           </h1>
 
           {/* DESCRIPTION - Shifted to the right using ml-auto and text-left */}
@@ -205,10 +208,7 @@ const Home = () => {
       {/* --- TESTIMONY SECTION --- */}
       <section className="pt-6 pb-12 px-6 md:px-24 bg-[#080808] border-t border-white/5 relative z-10">
         <div className="max-w-7xl mx-auto">
-          
-           <Testimonials />
-           
-          
+          <Testimonials />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {testimonials.map((t) => (
@@ -277,7 +277,7 @@ const Home = () => {
           Get in Touch
         </Link>
       </section>
-<hr />
+      <hr />
       <Footer />
     </div>
   );
