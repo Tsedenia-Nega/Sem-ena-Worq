@@ -23,12 +23,7 @@ const Blog = () => {
     fetchBlogs();
   }, []);
 
-  if (loading)
-    return (
-      <div className="min-h-screen bg-[#050505] flex items-center justify-center text-[#DD9735] text-xs tracking-widest uppercase">
-        Loading...
-      </div>
-    );
+
 const hexagons = [
   { id: 1, top: "-15%", left: "48%", rotation: "90deg" },
   { id: 2, top: "30%", left: "58%", rotation: "90deg" },
@@ -37,7 +32,7 @@ const hexagons = [
 ];
 
   return (
-    <div className="bg-[#050505] text-white min-h-screen pb-20 font-sans selection:bg-[#DD9735]/30">
+    <div className="bg-[#050505] text-white min-h-screen pb-10 font-sans selection:bg-[#DD9735]/30">
       <div className="max-w-6xl mx-auto px-6 relative z-10">
         <AnimatePresence mode="wait">
           {selectedArticle ? (
@@ -103,87 +98,97 @@ const hexagons = [
             </motion.div>
           ) : (
             /* --- NORMAL 3-COLUMN GRID --- */
-            <div className="pt-20">
-              <div className="text-center mb-16 space-y-3">
-                {/* <h2 className="text-[#DD9735] text-2xl  uppercase font-bold">
-                  Blog Posts
-                </h2> */}
-                <h2 className="text-4xl bg-gradient-to-r from-[#DD9735] to-[#f9d423] bg-clip-text text-transparent font-bold">
-                  Latest Blogs
-                </h2>
+            <div className="pt-10">
+              <div className="text-center mb-10 space-y-3">
+                <h1 className="text-white text-7xl md:text-4xl font-bold leading-tight">
+                  Latest{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DD9735] to-[#f9d423]">
+                    Blogs
+                  </span>
+                </h1>
                 <p className="text-gray-500 text-md max-w-lg mx-auto">
                   Latest updates and insights from our team.
                 </p>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {articles.map((article) => (
-                  <article
-                    key={article._id}
-                    className="flex flex-col group border border-white/5 bg-white/[0.01] p-4 rounded-xl hover:bg-white/[0.03] transition-all duration-300"
-                  >
-                    <div
-                      className="relative aspect-video w-full overflow-hidden rounded-lg mb-5 cursor-pointer"
-                      onClick={() => setSelectedArticle(article)}
+              {loading ? (
+                <div className="flex flex-col items-center justify-center mt-20 space-y-4">
+                  <div className="w-10 h-10 border-2 border-stone-200 border-t-[#DD9735] rounded-full animate-spin" />
+                  <p className=" uppercase tracking-[0.2em] text-[#DD9735] text-xs  ">
+                    Blogs...
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {articles.map((article) => (
+                    <article
+                      key={article._id}
+                      className="flex flex-col group border border-white/5 bg-white/[0.01] p-4 rounded-xl hover:bg-white/[0.03] transition-all duration-300"
                     >
-                      <img
-                        src={article.image && `${IMAGE_PATH}/${article.image}`}
-                        alt={article.title}
-                        loading="lazy"
-                        crossOrigin="anonymous"
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    </div>
+                      <div
+                        className="relative aspect-video w-full overflow-hidden rounded-lg mb-5 cursor-pointer"
+                        onClick={() => setSelectedArticle(article)}
+                      >
+                        <img
+                          src={
+                            article.image && `${IMAGE_PATH}/${article.image}`
+                          }
+                          alt={article.title}
+                          loading="lazy"
+                          crossOrigin="anonymous"
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </div>
 
-                    <div className="flex flex-col flex-1">
-                      <p className="text-[#DD9735] text-[10px] font-bold tracking-widest uppercase mb-2">
-                        {new Date(article.createdAt).toLocaleDateString()}
-                      </p>
-                      <h3
-                        className="text-lg font-bold mb-3 group-hover:text-[#DD9735] transition-colors cursor-pointer line-clamp-2 leading-normal py-1"
-                        onClick={() => setSelectedArticle(article)}
-                      >
-                        {article.title}
-                      </h3>
-                      <p className="text-gray-400 text-[14px] leading-relaxed line-clamp-3 mb-5 font-normal">
-                        {article.content}
-                      </p>
-                      <button
-                        onClick={() => setSelectedArticle(article)}
-                        className="mt-auto flex items-center gap-2 text-white text-xs font-bold uppercase tracking-wider group-hover:text-[#DD9735] transition-colors"
-                      >
-                        Read More <ArrowRight size={14} />
-                      </button>
-                    </div>
-                  </article>
-                ))}
-              </div>
+                      <div className="flex flex-col flex-1">
+                        <p className="text-[#DD9735] text-[10px] font-bold tracking-widest uppercase mb-2">
+                          {new Date(article.createdAt).toLocaleDateString()}
+                        </p>
+                        <h3
+                          className="text-lg font-bold mb-3 group-hover:text-[#DD9735] transition-colors cursor-pointer line-clamp-2 leading-normal py-1"
+                          onClick={() => setSelectedArticle(article)}
+                        >
+                          {article.title}
+                        </h3>
+                        <p className="text-gray-400 text-[14px] leading-relaxed line-clamp-3 mb-5 font-normal">
+                          {article.content}
+                        </p>
+                        <button
+                          onClick={() => setSelectedArticle(article)}
+                          className="mt-auto flex items-center gap-2 text-white text-xs font-bold uppercase tracking-wider group-hover:text-[#DD9735] transition-colors"
+                        >
+                          Read More <ArrowRight size={14} />
+                        </button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </AnimatePresence>
       </div>
       {/* Hexagons Background */}
-            {hexagons.map((hex) => (
-              <div
-                key={hex.id}
-                className="hexagon pointer-events-none"
-                style={{
-                  position: "fixed",
-                  top: hex.top || "auto",
-                  bottom: hex.bottom || "auto",
-                  left: hex.left,
-                  transform: `rotate(${hex.rotation})`,
-                  zIndex: 1,
-                  opacity: 0.2,
-                }}
-              >
-                <img
-                  src={image}
-                  alt={`Hexagon ${hex.id}`}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
+      {hexagons.map((hex) => (
+        <div
+          key={hex.id}
+          className="hexagon pointer-events-none"
+          style={{
+            position: "fixed",
+            top: hex.top || "auto",
+            bottom: hex.bottom || "auto",
+            left: hex.left,
+            transform: `rotate(${hex.rotation})`,
+            zIndex: 1,
+            opacity: 0.2,
+          }}
+        >
+          <img
+            src={image}
+            alt={`Hexagon ${hex.id}`}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      ))}
     </div>
   );
 };

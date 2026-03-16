@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api, { IMAGE_PATH } from "../api/axios";
 import "./../components/layout.css";
+import logo from "./../assets/Logo.PNG";
 import image from "./../assets/image.jpg";
 import Hexagons from "./../components/hexagons";
 import Footer from "./../components/Footer";
@@ -22,6 +23,7 @@ import Testimonials from "./Testimonials";
 
 const Home = () => {
   const [testimonials, setTestimonials] = useState([]);
+  const [loading, setLoading] = useState(false);
  const hexagons = [
    { id: 1, top: "-15%", left: "48%", rotation: "90deg" },
    { id: 2, top: "30%", left: "58%", rotation: "90deg" },
@@ -40,6 +42,27 @@ const Home = () => {
     fetchHomeData();
   }, []);
 
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center min-h-[400px]">
+                <div className="relative">
+                  
+                  <div className="absolute inset-0 rounded-full border border-[#A67C52] animate-ping opacity-20" />
+    
+                  
+                  <img
+                    src={logo}
+                    alt="Loading..."
+                    className="w-16 h-16 object-contain animate-pulse  transition-all duration-700"
+                  />
+                </div>
+    
+                <div className="mt-8 overflow-hidden">
+                  <p className="text-[10px] uppercase tracking-[0.5em] text-[#DD9735] animate-in fade-in slide-in-from-bottom-2 duration-1000">
+                    SEM ENA WORQ IS COMING
+                  </p>
+                </div>
+              </div>
+  )
   return (
     <div className="w-full min-h-screen bg-[#050505] text-white overflow-x-hidden selection:bg-[#DD9735] selection:text-black">
       {/* --- HERO SECTION: HEXAGONS ONLY HERE --- */}

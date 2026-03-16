@@ -1,6 +1,7 @@
 import React,{useState,useEffect} from "react";
 import ServiceCard from "../components/ServiceCard";
 import image from "./../assets/image.jpg";
+import logo from "./../assets/Logo.PNG";
 import api from "../api/axios";
 const Services = () => {
   const [services, setServices] = useState([]);
@@ -14,15 +15,13 @@ const Services = () => {
  useEffect(() => {
    const fetchServices = async () => {
      try {
-       // Calling the GET route you defined: router.get('/get')
+
        const response = await api.get("/services/get?page=1&limit=3");
 
-       // Map the data to handle the Buffer-to-Base64 conversion if needed
        const formattedServices = response.data.services.map((s) => ({
          title: s.title,
          desc: s.description,
-         // If backend returns buffer, we convert it.
-         // Note: Your getServiceById does this, but listServices might not.
+        
          image: s.image
        }));
 
@@ -51,8 +50,11 @@ const Services = () => {
         </div>
 
         {loading ? (
-          <div className="text-[#DD9735] animate-pulse mt-20">
-            Loading Elite Services...
+          <div className="flex flex-col items-center justify-center mt-20 space-y-4">
+            <div className="w-10 h-10 border-2 border-stone-200 border-t-[#DD9735] rounded-full animate-spin" />
+            <p className=" uppercase tracking-[0.2em] text-[#DD9735] text-xs  ">
+              Services...
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 w-full">
@@ -69,7 +71,6 @@ const Services = () => {
           </div>
         )}
 
-       
         {hexagons.map((hex) => (
           <div
             key={hex.id}
