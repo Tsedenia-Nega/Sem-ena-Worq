@@ -84,8 +84,11 @@ const Contact = () => {
     <div className="min-h-screen bg-[#000000] text-white pt-10 pb-10 font-itim overflow-x-hidden">
       <div className="max-w-7xl mx-auto px-10 md:px-20 relative">
         {/* Main Title */}
-        <h1 className="bg-gradient-to-r from-[#DD9735] to-[#f9d423] bg-clip-text text-transparent text-center text-4xl mb-8 uppercase">
-          Contact Us
+        <h1 className="text-white text-center mb-6 text-4xl font-bold leading-tight">
+          Contact{" "}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DD9735] to-[#f9d423]">
+          Us
+          </span>
         </h1>
 
         <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-10">

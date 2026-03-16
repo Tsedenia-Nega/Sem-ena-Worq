@@ -40,7 +40,7 @@ const Services = () => {
     <section className="min-h-screen bg-black py-12 px-6 md:px-16">
       <div className="max-w-7xl mx-auto flex flex-col items-center">
         <div className="text-center mb-5 max-w-3xl">
-          <h1 className="text-white text-7xl md:text-4xl font-bold leading-tight">
+          <h1 className="text-white text-4xl font-bold leading-tight">
             Premium{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DD9735] to-[#f9d423]">
               Solutions

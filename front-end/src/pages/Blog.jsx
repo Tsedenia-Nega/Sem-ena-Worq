@@ -100,7 +100,7 @@ const hexagons = [
             /* --- NORMAL 3-COLUMN GRID --- */
             <div className="pt-10">
               <div className="text-center mb-10 space-y-3">
-                <h1 className="text-white text-7xl md:text-4xl font-bold leading-tight">
+                <h1 className="text-white text-4xl font-bold leading-tight">
                   Latest{" "}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DD9735] to-[#f9d423]">
                     Blogs
