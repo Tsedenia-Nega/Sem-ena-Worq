@@ -80,21 +80,26 @@ const Navbar = () => {
 
       {/* 3. MOBILE MENU OVERLAY */}
       <div
-        className={`fixed inset-0 top-20 bg-white dark:bg-black z-40 md:hidden transition-transform duration-300 ease-in-out ${
-          isMenuOpen ? "translate-x-0" : "translate-x-full"
+        className={`fixed inset-0 top-20 z-40 md:hidden transition-all duration-500 ease-in-out ${
+          isMenuOpen
+            ? "opacity-100 visible translate-y-0"
+            : "opacity-0 invisible -translate-y-5"
         }`}
       >
-        <nav className="flex flex-col items-center pt-10 space-y-8 h-full">
+        {/* The Background Layer with Blur to match Desktop */}
+        <div className="absolute inset-0 bg-white/95 dark:bg-stone-950/95 backdrop-blur-xl transition-colors duration-300" />
+
+        <nav className="relative flex flex-col items-center pt-12 space-y-10 h-full">
           {navLinks.map((link) => (
             <NavLink
               key={link.name}
               to={link.path}
               onClick={() => setIsMenuOpen(false)}
               className={({ isActive }) =>
-                `text-2xl font-medium transition-colors ${
+                `text-xl font-bold uppercase tracking-[0.3em] transition-all duration-300 ${
                   isActive
                     ? "text-[#DD9735]"
-                    : "text-gray-600 dark:text-gray-300"
+                    : "text-stone-600 dark:text-stone-400 hover:text-[#DD9735]"
                 }`
               }
             >
@@ -102,16 +107,16 @@ const Navbar = () => {
             </NavLink>
           ))}
 
-          {/* 4. MOBILE ADMIN LINK (Bottom of the mobile list) */}
+          {/* 4. MOBILE ADMIN LINK */}
           {user && (
-            <div className="pt-8 w-full px-10">
+            <div className="pt-10 w-full px-12">
               <Link
                 to="/admin/portfolios"
                 onClick={() => setIsMenuOpen(false)}
-                className="flex items-center justify-center space-x-3 text-[#DD9735] font-bold text-2xl py-4 border-t border-gray-100 dark:border-gray-800"
+                className="flex items-center justify-center space-x-3 text-[#DD9735] font-bold text-lg py-5 border-t border-stone-100 dark:border-stone-900"
               >
-                <LayoutDashboard size={28} />
-                <span>Admin Panel</span>
+                <LayoutDashboard size={22} />
+                <span className="uppercase tracking-widest">Admin Panel</span>
               </Link>
             </div>
           )}

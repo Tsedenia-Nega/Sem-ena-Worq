@@ -42,32 +42,12 @@ const Home = () => {
     fetchHomeData();
   }, []);
 
-  if (loading) return (
-    <div className="flex flex-col items-center justify-center min-h-[400px]">
-                <div className="relative">
-                  
-                  <div className="absolute inset-0 rounded-full border border-[#A67C52] animate-ping opacity-20" />
-    
-                  
-                  <img
-                    src={logo}
-                    alt="Loading..."
-                    className="w-16 h-16 object-contain animate-pulse  transition-all duration-700"
-                  />
-                </div>
-    
-                <div className="mt-8 overflow-hidden">
-                  <p className="text-[10px] uppercase tracking-[0.5em] text-[#DD9735] animate-in fade-in slide-in-from-bottom-2 duration-1000">
-                    SEM ENA WORQ IS COMING
-                  </p>
-                </div>
-              </div>
-  )
+ 
   return (
     <div className="w-full min-h-screen bg-[#050505] text-white overflow-x-hidden selection:bg-[#DD9735] selection:text-black">
       {/* --- HERO SECTION: HEXAGONS ONLY HERE --- */}
       <section className="relative h-screen w-full flex items-center justify-center px-6 overflow-hidden">
-        <div className="absolute inset-0 z-0 pointer-events-none opacity-50">
+        <div className="hidden md:block absolute inset-0 z-0 pointer-events-none opacity-50">
           <Hexagons />
         </div>
 
