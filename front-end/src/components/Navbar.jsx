@@ -80,7 +80,7 @@ const Navbar = () => {
 
       {/* 3. MOBILE MENU OVERLAY */}
       <div
-        className={`fixed inset-0 dark:bg-stone-950/95  z-40 md:hidden transition-all duration-500 ease-in-out ${
+        className={`fixed inset-0 dark:bg-stone-950/95 top-0 z-40 md:hidden transition-all duration-500 ease-in-out ${
           isMenuOpen
             ? "opacity-100 visible translate-y-0"
             : "opacity-0 invisible -translate-y-5"
