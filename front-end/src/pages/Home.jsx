@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 
 import Testimonials from "./Testimonials";
+import WhyUs from "../components/WhyUs";
 
 const Home = () => {
   const [testimonials, setTestimonials] = useState([]);
@@ -116,6 +117,7 @@ const Home = () => {
         </div>
       </section>
 
+<WhyUs/>
       {/* --- CREATIVE CARDS: THE PILLARS (REDESIGNED) --- */}
       <section className="py-32 px-6 md:px-24 bg-[#050505] relative z-10">
         <div className="max-w-7xl mx-auto">
