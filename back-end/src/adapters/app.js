@@ -42,7 +42,13 @@ app.use("/sem&worq/testimony", testimonyRoutes);
 app.use("/sem&worq/contacts", contactRoutes);
 app.use("/sem&worq/portfolio", portfloio);
 
-
+app.get("/health", (req, res) => {
+  res.json({
+    status: "Service is Up",
+    message:
+      "If you can see this, the Port and Render settings are 100% correct!",
+  });
+});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
