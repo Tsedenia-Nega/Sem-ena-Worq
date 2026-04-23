@@ -35,7 +35,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Base Routes
-app.use("/sem-worq", AuthRoutes);
+app.use("/sem&worq", AuthRoutes);
 app.use("/sem&worq/blogs", blogRoutes);
 app.use("/sem&worq/services", serviceRoutes);
 app.use("/sem&worq/testimony", testimonyRoutes);

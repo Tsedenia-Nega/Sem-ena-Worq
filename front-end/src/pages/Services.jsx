@@ -53,7 +53,7 @@ const Services = () => {
           <div className="flex flex-col items-center justify-center mt-20 space-y-4">
             <div className="w-10 h-10 border-2 border-stone-200 border-t-[#DD9735] rounded-full animate-spin" />
             <p className=" uppercase tracking-[0.2em] text-[#DD9735] text-xs  ">
-              Services...
+              Services..
             </p>
           </div>
         ) : (
